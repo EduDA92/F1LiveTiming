@@ -1,7 +1,7 @@
 package com.example.f1livetiming.data.di
 
 import com.example.f1livetiming.data.repository.F1LiveTimingRepository
-import com.example.f1livetiming.data.repository.F1PastEventTimingRepositoryImpl
+import com.example.f1livetiming.data.repository.F1LiveTimingRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -13,7 +13,7 @@ abstract class DataModule {
 
     @Binds
     abstract fun bindF1LiveTimingRepository(
-        f1PastEventTimingRepositoryImpl: F1PastEventTimingRepositoryImpl
+        f1LiveTimingRepositoryImpl: F1LiveTimingRepositoryImpl
     ): F1LiveTimingRepository
 
 }

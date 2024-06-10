@@ -16,13 +16,9 @@ class LiveTimingViewModel @Inject constructor(
     private val liveTimingRepository: F1LiveTimingRepository
 ) : ViewModel() {
 
-    val liveTimingUIState: StateFlow<LiveTimingUIState> = liveTimingRepository.getDriversPositions(
-        "9472"
-    ) {}.map{
-
+    val liveTimingUIState: StateFlow<LiveTimingUIState> = liveTimingRepository.getDriversPositions {}.map{
         val data = LiveTimingData(it)
         LiveTimingUIState.Success(data)
-
     }.stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(),
