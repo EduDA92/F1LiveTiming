@@ -21,6 +21,10 @@ class F1LiveTimingRepositoryImpl @Inject constructor(
     @Dispatcher(F1LiveTimingDispatchers.IO) private val ioDispatcher: CoroutineDispatcher
 ) : F1LiveTimingRepository {
 
+    /**
+     * Get the drivers positions from the API returns List of [DriverPosition]
+     */
+
     override fun getDriversPositions(
         onError: (String) -> Unit
     ): Flow<List<DriverPosition>> = flow {
@@ -30,19 +34,18 @@ class F1LiveTimingRepositoryImpl @Inject constructor(
 
             if (driversPositionResponse.isSuccessful) {
 
-                Log.d(TAG, "Driver Positions response successful")
-
-                val driverPositionsResponse = driversPositionResponse.body()!!.groupBy { it.driverNumber }
+                val driverPositionsResponse =
+                    driversPositionResponse.body()!!.groupBy { it.driverNumber }
                 val driverPositionList = mutableListOf<DriverPosition>()
 
-                /* Group the data by driver, we cannot request the data by date because the initial lineup
-                * will be at the start of the session and the subsequent data is only position updates.
-                * so we need the full data in order to know the position of each driver at any time */
+                /** Group the data by driver, we cannot request the data by date because the initial lineup
+                 * will be at the start of the session and the subsequent data is only position updates.
+                 * so we need the full data in order to know the position of each driver at any time */
 
                 driverPositionsResponse.forEach { (driverNumber, driverPositions) ->
 
-                    /* For each driver create a DriverPosition object with the driver number and
-                    * the latest updated position. */
+                    /** For each driver create a DriverPosition object with the driver number and
+                     * the latest updated position. */
 
                     driverPositionList.add(
                         DriverPosition(
@@ -58,19 +61,14 @@ class F1LiveTimingRepositoryImpl @Inject constructor(
 
                 }
 
-                Log.d(TAG, driverPositionList.toString())
-
                 emit(driverPositionList.sortedBy { it.driverPosition })
 
 
             } else {
-                Log.d(TAG, "Driver Positions response error")
-                Log.d(TAG, driversPositionResponse.errorBody().toString())
                 onError(driversPositionResponse.errorBody().toString())
             }
 
-        } catch (e: Exception){
-            Log.d(TAG, "Exception: " + e.message.toString())
+        } catch (e: Exception) {
             onError(e.message.toString())
         }
 
