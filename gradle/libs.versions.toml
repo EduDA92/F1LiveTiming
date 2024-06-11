@@ -1,11 +1,11 @@
 [versions]
-agp = "8.4.1"
+agp = "8.4.2"
 kotlin = "2.0.0"
 coreKtx = "1.13.1"
 junit = "4.13.2"
 junitVersion = "1.1.5"
 espressoCore = "3.5.1"
-lifecycleRuntimeKtx = "2.7.0"
+lifecycleRuntimeKtx = "2.8.1"
 activityCompose = "1.9.0"
 composeBom = "2024.05.00"
 hilt = "2.51.1"
@@ -17,6 +17,8 @@ okhttp = "4.12.0"
 kotlin-serialization-plugin = "2.0.0"
 kotlinx-serialization-json = "1.7.0-RC"
 nav-version = "2.7.7"
+kotlinx-coroutines-test-version = "1.8.1"
+mockwebserver-version = "4.12.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -42,6 +44,8 @@ retrofit-converter-kotlinx-serialization = {group = "com.squareup.retrofit2", na
 kotlinx-serialization-json = {group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinx-serialization-json"}
 okhttp = {group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp"}
 androidx-navigation = {group = "androidx.navigation", name = "navigation-compose", version.ref = "nav-version"}
+kotlinx-coroutines-test = {group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinx-coroutines-test-version"}
+mockwebserver = {group = "com.squareup.okhttp3", name = "mockwebserver", version.ref = "mockwebserver-version"}
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
