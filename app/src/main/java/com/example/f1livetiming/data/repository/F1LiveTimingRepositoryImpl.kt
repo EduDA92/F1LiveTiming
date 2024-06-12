@@ -6,9 +6,11 @@ import com.example.f1livetiming.data.dispatchers.F1LiveTimingDispatchers
 import com.example.f1livetiming.data.network.F1Client
 import com.example.f1livetiming.ui.model.DriverPosition
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.onStart
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
@@ -22,56 +24,65 @@ class F1LiveTimingRepositoryImpl @Inject constructor(
 ) : F1LiveTimingRepository {
 
     /**
-     * Get the drivers positions from the API returns List of [DriverPosition]
+     * Get the drivers positions from the API returns List of [DriverPosition].
+     * The flow will call the API every 5 seconds for updates.
      */
 
     override fun getDriversPositions(
+        onStart: () -> Unit,
+        onIdle: () -> Unit,
         onError: (String) -> Unit
     ): Flow<List<DriverPosition>> = flow {
 
-        try {
-            val driversPositionResponse = f1Client.getDriversPosition("latest")
+        while(true){
 
-            if (driversPositionResponse.isSuccessful) {
+            try {
+                val driversPositionResponse = f1Client.getDriversPosition("latest")
 
-                val driverPositionsResponse =
-                    driversPositionResponse.body()!!.groupBy { it.driverNumber }
-                val driverPositionList = mutableListOf<DriverPosition>()
+                if (driversPositionResponse.isSuccessful) {
 
-                /** Group the data by driver, we cannot request the data by date because the initial lineup
-                 * will be at the start of the session and the subsequent data is only position updates.
-                 * so we need the full data in order to know the position of each driver at any time */
+                    val driverPositionsResponse =
+                        driversPositionResponse.body()!!.groupBy { it.driverNumber }
+                    val driverPositionList = mutableListOf<DriverPosition>()
 
-                driverPositionsResponse.forEach { (driverNumber, driverPositions) ->
+                    /** Group the data by driver, we cannot request the data by date because the initial lineup
+                     * will be at the start of the session and the subsequent data is only position updates.
+                     * so we need the full data in order to know the position of each driver at any time */
 
-                    /** For each driver create a DriverPosition object with the driver number and
-                     * the latest updated position. */
+                    driverPositionsResponse.forEach { (driverNumber, driverPositions) ->
 
-                    driverPositionList.add(
-                        DriverPosition(
-                            driverNumber,
-                            driverPositions.sortedBy {
-                                LocalDateTime.parse(
-                                    it.date,
-                                    DateTimeFormatter.ISO_DATE_TIME
-                                )
-                            }.last().position
+                        /** For each driver create a DriverPosition object with the driver number and
+                         * the latest updated position. */
+
+                        driverPositionList.add(
+                            DriverPosition(
+                                driverNumber,
+                                driverPositions.sortedBy {
+                                    LocalDateTime.parse(
+                                        it.date,
+                                        DateTimeFormatter.ISO_DATE_TIME
+                                    )
+                                }.last().position
+                            )
                         )
-                    )
 
+                    }
+
+                    emit(driverPositionList.sortedBy { it.driverPosition })
+                    onIdle()
+
+
+                } else {
+                    onError(driversPositionResponse.errorBody().toString())
                 }
 
-                emit(driverPositionList.sortedBy { it.driverPosition })
-
-
-            } else {
-                onError(driversPositionResponse.errorBody().toString())
+            } catch (e: Exception) {
+                onError(e.message.toString())
             }
 
-        } catch (e: Exception) {
-            onError(e.message.toString())
+            delay(5000)
+
         }
 
-
-    }.flowOn(ioDispatcher)
+    }.onStart{onStart()}.flowOn(ioDispatcher)
 }

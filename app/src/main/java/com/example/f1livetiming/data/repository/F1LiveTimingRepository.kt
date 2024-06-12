@@ -6,6 +6,8 @@ import kotlinx.coroutines.flow.Flow
 interface F1LiveTimingRepository {
 
     fun getDriversPositions(
+        onStart: () -> Unit,
+        onIdle: () -> Unit,
         onError: (String) -> Unit
     ): Flow<List<DriverPosition>>
 
