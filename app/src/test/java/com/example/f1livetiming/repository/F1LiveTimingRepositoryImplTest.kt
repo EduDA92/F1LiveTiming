@@ -64,7 +64,10 @@ class F1LiveTimingRepositoryImplTest {
 
         mockWebServer.enqueueResponse("PositionsFullResponse.json")
 
-        val result = repository.getDriversPositions {  }.first()
+        val result = repository.getDriversPositions(
+            onIdle = {},
+            onError = {}
+        ).first()
 
         assertEquals(expectedFullResponse, result)
 
@@ -75,7 +78,10 @@ class F1LiveTimingRepositoryImplTest {
 
         mockWebServer.enqueueResponse("EmptyResponse.json")
 
-        val result = repository.getDriversPositions {  }.first()
+        val result = repository.getDriversPositions(
+            onIdle = {},
+            onError = {}
+        ).first()
 
         assertEquals(result, emptyList<DriverPosition>())
 
