@@ -26,9 +26,8 @@ class LiveTimingViewModel @Inject constructor(
     val liveTimingUIState: StateFlow<LiveTimingUIState> = _liveTimingUIState.asStateFlow()
 
     val liveTimingData: StateFlow<LiveTimingData> = liveTimingRepository.getDriversPositions(
-        onStart = {_liveTimingUIState.update { LiveTimingUIState.Loading }},
         onIdle = {_liveTimingUIState.update { LiveTimingUIState.Idle }},
-        onError = {_liveTimingUIState.update { LiveTimingUIState.Error(it.toString()) }}
+        onError = { errorMessage -> _liveTimingUIState.update { LiveTimingUIState.Error(errorMessage) }}
     ).map {
 
         LiveTimingData(

@@ -29,7 +29,6 @@ class F1LiveTimingRepositoryImpl @Inject constructor(
      */
 
     override fun getDriversPositions(
-        onStart: () -> Unit,
         onIdle: () -> Unit,
         onError: (String) -> Unit
     ): Flow<List<DriverPosition>> = flow {
@@ -84,5 +83,5 @@ class F1LiveTimingRepositoryImpl @Inject constructor(
 
         }
 
-    }.onStart{onStart()}.flowOn(ioDispatcher)
+    }.flowOn(ioDispatcher)
 }
