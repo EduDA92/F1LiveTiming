@@ -10,9 +10,11 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.plus
 import javax.inject.Inject
 
 @HiltViewModel
@@ -21,26 +23,54 @@ class LiveTimingViewModel @Inject constructor(
 ) : ViewModel() {
 
 
-
-    private val _liveTimingUIState: MutableStateFlow<LiveTimingUIState> =  MutableStateFlow(LiveTimingUIState.Loading)
+    private val _liveTimingUIState: MutableStateFlow<LiveTimingUIState> =
+        MutableStateFlow(LiveTimingUIState.Loading)
     val liveTimingUIState: StateFlow<LiveTimingUIState> = _liveTimingUIState.asStateFlow()
 
-    val liveTimingData: StateFlow<LiveTimingData> = liveTimingRepository.getDriversPositions(
-        onIdle = {_liveTimingUIState.update { LiveTimingUIState.Idle }},
-        onError = { errorMessage -> _liveTimingUIState.update { LiveTimingUIState.Error(errorMessage) }}
-    ).map {
+    val liveTimingData: StateFlow<LiveTimingData> =
+        combine(liveTimingRepository.getDriversPositions(
+            onIdle = { _liveTimingUIState.update { LiveTimingUIState.Idle } },
+            onError = { errorMessage ->
+                _liveTimingUIState.update {
+                    LiveTimingUIState.Error(
+                        errorMessage
+                    )
+                }
+            }
+        ), liveTimingRepository.getDrivers(
+            onIdle = { _liveTimingUIState.update { LiveTimingUIState.Idle } },
+            onError = { errorMessage ->
+                _liveTimingUIState.update {
+                    LiveTimingUIState.Error(
+                        errorMessage
+                    )
+                }
+            }
+        )) { positions, drivers ->
 
-        LiveTimingData(
-            positions = it
-        )
 
-    }.stateIn(
-        viewModelScope,
-        SharingStarted.WhileSubscribed(),
-        LiveTimingData(
-            positions = emptyList()
+            val driverDataList = positions.map {
+
+                DriverData(
+                    driverNumber = it.driverNumber,
+                    driverPosition = it.driverPosition,
+                    driverAcronym = drivers.first { driver -> driver.driverNumber == it.driverNumber }.driverAcronym,
+                    teamColor = drivers.first { driver -> driver.driverNumber == it.driverNumber }.teamColor
+                )
+
+            }
+
+            LiveTimingData(
+                driverDataList = driverDataList
+            )
+
+        }.stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(),
+            LiveTimingData(
+                driverDataList = emptyList()
+            )
         )
-    )
 
 }
 
@@ -51,5 +81,12 @@ sealed interface LiveTimingUIState {
 }
 
 data class LiveTimingData(
-    val positions: List<DriverPosition>
+    val driverDataList: List<DriverData>
+)
+
+data class DriverData(
+    val driverNumber: Int,
+    val driverPosition: Int,
+    val driverAcronym: String,
+    val teamColor: String
 )

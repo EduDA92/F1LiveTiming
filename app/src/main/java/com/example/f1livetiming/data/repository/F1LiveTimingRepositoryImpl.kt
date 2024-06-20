@@ -3,14 +3,15 @@ package com.example.f1livetiming.data.repository
 import android.util.Log
 import com.example.f1livetiming.data.dispatchers.Dispatcher
 import com.example.f1livetiming.data.dispatchers.F1LiveTimingDispatchers
+import com.example.f1livetiming.data.mapper.F1DriverMapper.asDomain
 import com.example.f1livetiming.data.network.F1Client
+import com.example.f1livetiming.ui.model.Driver
 import com.example.f1livetiming.ui.model.DriverPosition
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.onStart
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
@@ -33,7 +34,7 @@ class F1LiveTimingRepositoryImpl @Inject constructor(
         onError: (String) -> Unit
     ): Flow<List<DriverPosition>> = flow {
 
-        while(true){
+        while (true) {
 
             try {
                 val driversPositionResponse = f1Client.getDriversPosition("latest")
@@ -81,6 +82,32 @@ class F1LiveTimingRepositoryImpl @Inject constructor(
 
             delay(5000)
 
+        }
+
+    }.flowOn(ioDispatcher)
+
+    /** Get the driver list from the API and returns a list of [Driver] */
+
+    override fun getDrivers(
+        onIdle: () -> Unit,
+        onError: (String) -> Unit
+    ): Flow<List<Driver>> = flow {
+
+        try {
+
+            val driverResponse = f1Client.getDrivers("latest")
+
+            if (driverResponse.isSuccessful) {
+
+                emit(driverResponse.body()!!.asDomain())
+                onIdle()
+
+            } else {
+                onError(driverResponse.errorBody().toString())
+            }
+
+        } catch (e: Exception) {
+            onError(e.message.toString())
         }
 
     }.flowOn(ioDispatcher)

@@ -3,6 +3,7 @@ package com.example.f1livetiming.repository
 import com.example.f1livetiming.data.network.F1Client
 import com.example.f1livetiming.data.network.F1Service
 import com.example.f1livetiming.data.repository.F1LiveTimingRepositoryImpl
+import com.example.f1livetiming.ui.model.Driver
 import com.example.f1livetiming.ui.model.DriverPosition
 import com.example.f1livetiming.utils.MainDispatcherRule
 import com.example.f1livetiming.utils.enqueueResponse
@@ -60,7 +61,7 @@ class F1LiveTimingRepositoryImplTest {
 
 
     @Test
-    fun f1LiveTimingRepositoryImpl_FullPositionJSonResponse_ReturnsExpectedPositionList() = runTest {
+    fun f1LiveTimingRepositoryImpl_fullPositionResponse_returnsExpectedPositionList() = runTest {
 
         mockWebServer.enqueueResponse("PositionsFullResponse.json")
 
@@ -74,7 +75,7 @@ class F1LiveTimingRepositoryImplTest {
     }
 
     @Test
-    fun f1LiveTimingRepositoryImpl_EmptyPositionJSonResponse_ReturnsEmptyList() = runTest {
+    fun f1LiveTimingRepositoryImpl_emptyPositionResponse_returnsEmptyList() = runTest {
 
         mockWebServer.enqueueResponse("EmptyResponse.json")
 
@@ -86,6 +87,34 @@ class F1LiveTimingRepositoryImplTest {
         assertEquals(result, emptyList<DriverPosition>())
 
     }
+
+    @Test
+    fun f1LiveTimingRepositoryImpl_FullDriverResponse_returnsExpectedList() = runTest {
+
+        mockWebServer.enqueueResponse("DriversResponse.json")
+
+        val result = repository.getDrivers(
+            onIdle = {},
+            onError = {}
+        ).first()
+
+        assertEquals(expectedDriverResponse, result)
+
+    }
+
+
+    private val expectedDriverResponse = listOf(
+        Driver(
+            driverAcronym = "VER",
+            driverNumber = 1,
+            teamColor = "#3671C6"
+        ),
+        Driver(
+            driverAcronym = "SAR",
+            driverNumber = 2,
+            teamColor = "#64C4FF"
+        )
+    )
 
     private val expectedFullResponse = listOf(
         DriverPosition(

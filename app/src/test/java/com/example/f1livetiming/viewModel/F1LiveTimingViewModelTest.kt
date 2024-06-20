@@ -2,9 +2,11 @@ package com.example.f1livetiming.viewModel
 
 import com.example.f1livetiming.data.repository.ResponseState
 import com.example.f1livetiming.data.repository.TestF1LiveTimingRepositoryImpl
+import com.example.f1livetiming.ui.liveTimingScreen.DriverData
 import com.example.f1livetiming.ui.liveTimingScreen.LiveTimingData
 import com.example.f1livetiming.ui.liveTimingScreen.LiveTimingUIState
 import com.example.f1livetiming.ui.liveTimingScreen.LiveTimingViewModel
+import com.example.f1livetiming.ui.model.Driver
 import com.example.f1livetiming.ui.model.DriverPosition
 import com.example.f1livetiming.utils.MainDispatcherRule
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -36,7 +38,7 @@ class F1LiveTimingViewModelTest {
     /**
      * The initial value of the [LiveTimingUIState] should be Loading until the combine flow operation for
      * the [LiveTimingData] assembly is done.
-     * The initial value of the [LiveTimingData] is positions = emptyList() */
+     * The initial value of the [LiveTimingData] is driverDataList = emptyList() */
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
@@ -51,14 +53,14 @@ class F1LiveTimingViewModelTest {
         }
 
         assertEquals(LiveTimingUIState.Loading, viewModel.liveTimingUIState.value)
-        assertEquals(LiveTimingData(positions = emptyList(), ),viewModel.liveTimingData.value)
+        assertEquals(LiveTimingData(driverDataList = emptyList()),viewModel.liveTimingData.value)
 
         collectJob.cancel()
         collectJob2.cancel()
     }
 
     /** When [ResponseState] is Error [LiveTimingUIState] should be Error
-     * [LiveTimingData] positions = emptyList() */
+     * [LiveTimingData] driverDataList = emptyList() */
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun f1LiveTimingViewModel_whenApiSendsError_ErrorState() = runTest {
@@ -75,7 +77,7 @@ class F1LiveTimingViewModelTest {
         }
 
         assertEquals(LiveTimingUIState.Error("Error"), viewModel.liveTimingUIState.value)
-        assertEquals(LiveTimingData(positions = emptyList(), ),viewModel.liveTimingData.value)
+        assertEquals(LiveTimingData(driverDataList = emptyList()),viewModel.liveTimingData.value)
 
         collectJob.cancel()
         collectJob2.cancel()
@@ -90,6 +92,7 @@ class F1LiveTimingViewModelTest {
             /** Setup the state of the repo first */
             repository.changeResponseState(state = ResponseState.SUCCESS)
             repository.changeDriverPositionList(listOf(DriverPosition(1, 1)))
+            repository.changeDriverList(listOf(Driver("VER", 1, "#FF3671C6")))
 
             val collectJob = launch(UnconfinedTestDispatcher(testScheduler)) {
                 viewModel.liveTimingUIState.collect()
@@ -103,7 +106,14 @@ class F1LiveTimingViewModelTest {
             assertEquals(LiveTimingUIState.Idle, viewModel.liveTimingUIState.value)
 
             assertEquals(
-                LiveTimingData(positions = listOf(DriverPosition(1, 1))),
+                LiveTimingData(driverDataList = listOf(
+                    DriverData(
+                        driverNumber = 1,
+                        driverPosition = 1,
+                        driverAcronym = "VER",
+                        teamColor = "#FF3671C6"
+                    )
+                )),
                 viewModel.liveTimingData.value
             )
 
