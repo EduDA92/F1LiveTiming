@@ -1,6 +1,5 @@
 package com.example.f1livetiming.data.repository
 
-import android.util.Log
 import com.example.f1livetiming.data.dispatchers.Dispatcher
 import com.example.f1livetiming.data.dispatchers.F1LiveTimingDispatchers
 import com.example.f1livetiming.data.mapper.F1DriverMapper.asDomain
@@ -12,6 +11,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.retryWhen
+import java.io.IOException
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
@@ -86,29 +87,31 @@ class F1LiveTimingRepositoryImpl @Inject constructor(
 
     }.flowOn(ioDispatcher)
 
-    /** Get the driver list from the API and returns a list of [Driver] */
+    /** Get the driver list from the API and returns a list of [Driver]
+     * If the flow fails because of an IOException(No internet connection when making the request)
+     * the flow will retry with constant backoff of 5s */
 
     override fun getDrivers(
         onIdle: () -> Unit,
         onError: (String) -> Unit
     ): Flow<List<Driver>> = flow {
 
-        try {
-
             val driverResponse = f1Client.getDrivers("latest")
 
             if (driverResponse.isSuccessful) {
-
                 emit(driverResponse.body()!!.asDomain())
                 onIdle()
-
             } else {
                 onError(driverResponse.errorBody().toString())
             }
 
-        } catch (e: Exception) {
-            onError(e.message.toString())
+    }.retryWhen { cause: Throwable, attempt: Long ->
+        if(cause is IOException){
+            onError(cause.message.toString())
+            delay(5000)
+            true
+        } else {
+            false
         }
-
     }.flowOn(ioDispatcher)
 }
