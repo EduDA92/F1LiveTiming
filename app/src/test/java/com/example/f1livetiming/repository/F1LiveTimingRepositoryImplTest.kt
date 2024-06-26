@@ -132,6 +132,20 @@ class F1LiveTimingRepositoryImplTest {
 
     }
 
+    @Test
+    fun f1LiveTimingRepositoryImpl_nullLapDurationResponse_returnsDefaultValueBestLap() = runTest {
+
+        mockWebServer.enqueueResponse("nullLapDurationResponse.json")
+
+        val result = repository.getLaps(
+            onIdle = {},
+            onError = {}
+        ).first()
+
+        assertEquals(ExpectedResponses.expectedNullLapDurationResponse, result)
+
+    }
+
 
 
 

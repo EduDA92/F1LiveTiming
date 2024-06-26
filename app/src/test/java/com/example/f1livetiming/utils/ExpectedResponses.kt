@@ -222,4 +222,46 @@ object ExpectedResponses {
         )
     )
 
+    val expectedNullLapDurationResponse = listOf(
+        Pair(
+            first = Lap(
+                driverNumber = 1,
+                lapDuration = null,
+                lapNumber = 1,
+                sector1Duration = null,
+                sector2Duration = 32.054,
+                sector3Duration = 23.658,
+                segmentsSector1 = listOf(
+                    2048,
+                    2049,
+                    2049,
+                    2049,
+                    2049,
+                    2049,
+                    2049
+                ),
+                segmentsSector2 = listOf(
+                    2049,
+                    2049,
+                    2049,
+                    2049,
+                    2049,
+                    2049,
+                    2051,
+                    2049
+                ),
+                segmentsSector3 = listOf(
+                    2048,
+                    2048,
+                    2049,
+                    2051,
+                    2048,
+                    2048
+                )
+
+            ),
+            second = 0.0
+        )
+    )
+
 }

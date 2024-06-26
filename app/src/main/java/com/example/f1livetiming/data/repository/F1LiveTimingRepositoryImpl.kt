@@ -138,7 +138,7 @@ class F1LiveTimingRepositoryImpl @Inject constructor(
                             driverLapsList.add(
                                 Pair(
                                     first = lapsList.maxByOrNull { it.lapNumber }!!.asDomain(),
-                                    second = lapsList.minOf { it.lapDuration ?: 99999.999 },
+                                    second = lapsList.filter { it.lapDuration != null }.minOfOrNull { it.lapDuration!! } ?: 0.0,
                                 )
                             )
 
