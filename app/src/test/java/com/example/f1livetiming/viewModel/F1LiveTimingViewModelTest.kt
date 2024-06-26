@@ -170,5 +170,84 @@ class F1LiveTimingViewModelTest {
             collectJob2.cancel()
         }
 
+    /** When there is no lap data associated to a driver the default lap data sent to the UI
+     * will be 0.0 */
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun f1LiveTimingViewModel_whenApiSendsIncompleteLapData_lapDataIsDefaultData() = runTest {
 
+        /** Setup the state of the repo first */
+        repository.changeResponseState(state = ResponseState.SUCCESS)
+        repository.changeDriverPositionList(listOf(DriverPosition(1, 1)))
+        repository.changeDriverList(listOf(Driver("VER", 1, "#FF3671C6")))
+        repository.changeLapsList(
+            listOf(Pair(
+                first = Lap(
+                    driverNumber = 256,
+                    lapDuration = 79.774,
+                    lapNumber = 66,
+                    sector1Duration = 23.251,
+                    sector2Duration = 32.326,
+                    sector3Duration = 24.197,
+                    segmentsSector1 = listOf(
+                        2049,
+                        2049,
+                        2048,
+                        2048,
+                        2048,
+                        2048,
+                        2048
+                    ),
+                    segmentsSector2 = listOf(
+                        2048,
+                        2048,
+                        2048,
+                        2048,
+                        2048,
+                        2048,
+                        2048,
+                        2048
+                    ),
+                    segmentsSector3 = listOf(
+                        2048,
+                        2048,
+                        2048,
+                        2048,
+                        2064,
+                        2064
+                    )
+
+                ),
+                second = 77.776
+            )) )
+
+        val collectJob = launch(UnconfinedTestDispatcher(testScheduler)) {
+            viewModel.liveTimingUIState.collect()
+        }
+
+        val collectJob2 = launch(UnconfinedTestDispatcher(testScheduler)) {
+            viewModel.liveTimingData.collect()
+        }
+
+        assertEquals(LiveTimingUIState.Idle, viewModel.liveTimingUIState.value)
+
+        assertEquals(
+            LiveTimingData(
+                driverDataList = listOf(
+                    DriverData(
+                        driverNumber = 1,
+                        driverPosition = 1,
+                        driverAcronym = "VER",
+                        teamColor = "#FF3671C6",
+                        bestLap = 0.0,
+                        lastLap = 0.0
+                    )
+                )
+            ),
+            viewModel.liveTimingData.value
+        )
+
+        collectJob.cancel()
+        collectJob2.cancel()
+    }
 }
