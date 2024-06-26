@@ -3,9 +3,11 @@ package com.example.f1livetiming.data.repository
 import com.example.f1livetiming.data.dispatchers.Dispatcher
 import com.example.f1livetiming.data.dispatchers.F1LiveTimingDispatchers
 import com.example.f1livetiming.data.mapper.F1DriverMapper.asDomain
+import com.example.f1livetiming.data.mapper.F1LapMapper.asDomain
 import com.example.f1livetiming.data.network.F1Client
 import com.example.f1livetiming.ui.model.Driver
 import com.example.f1livetiming.ui.model.DriverPosition
+import com.example.f1livetiming.ui.model.Lap
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -81,7 +83,7 @@ class F1LiveTimingRepositoryImpl @Inject constructor(
                 onError(e.message.toString())
             }
 
-            delay(5000)
+            delay(4000)
 
         }
 
@@ -96,17 +98,17 @@ class F1LiveTimingRepositoryImpl @Inject constructor(
         onError: (String) -> Unit
     ): Flow<List<Driver>> = flow {
 
-            val driverResponse = f1Client.getDrivers("latest")
+        val driverResponse = f1Client.getDrivers("latest")
 
-            if (driverResponse.isSuccessful) {
-                emit(driverResponse.body()!!.asDomain())
-                onIdle()
-            } else {
-                onError(driverResponse.errorBody().toString())
-            }
+        if (driverResponse.isSuccessful) {
+            emit(driverResponse.body()!!.asDomain())
+            onIdle()
+        } else {
+            onError(driverResponse.errorBody().toString())
+        }
 
     }.retryWhen { cause: Throwable, attempt: Long ->
-        if(cause is IOException){
+        if (cause is IOException) {
             onError(cause.message.toString())
             delay(5000)
             true
@@ -114,4 +116,48 @@ class F1LiveTimingRepositoryImpl @Inject constructor(
             false
         }
     }.flowOn(ioDispatcher)
+
+    /** Get the lap list from the API, this will return a list that contains a Pair of [Lap] and [Double]
+     * the pair will be Pair<LastLap, BestLapDuration>*/
+
+    override fun getLaps(onIdle: () -> Unit, onError: (String) -> Unit): Flow<List<Pair<Lap, Double>>> =
+        flow<List<Pair<Lap, Double>>> {
+
+            while (true) {
+
+                try {
+                    val lapsResponse = f1Client.getLaps("latest")
+
+                    if(lapsResponse.isSuccessful){
+
+                        val driverLapsResponse = lapsResponse.body()!!.groupBy { it.driverNumber }
+                        val driverLapsList = mutableListOf<Pair<Lap, Double>>()
+
+                        driverLapsResponse.forEach { (_, lapsList) ->
+
+                            driverLapsList.add(
+                                Pair(
+                                    first = lapsList.maxByOrNull { it.lapNumber }!!.asDomain(),
+                                    second = lapsList.minOf { it.lapDuration ?: 99999.999 },
+                                )
+                            )
+
+                        }
+
+                        emit(driverLapsList)
+                        onIdle()
+
+                    } else{
+                        onError(lapsResponse.errorBody().toString())
+                    }
+
+                } catch (e: Exception) {
+                    onError(e.message.toString())
+                }
+
+                delay(5000)
+
+            }
+
+        }.flowOn(ioDispatcher)
 }

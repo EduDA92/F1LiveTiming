@@ -3,8 +3,9 @@ package com.example.f1livetiming.repository
 import com.example.f1livetiming.data.network.F1Client
 import com.example.f1livetiming.data.network.F1Service
 import com.example.f1livetiming.data.repository.F1LiveTimingRepositoryImpl
-import com.example.f1livetiming.ui.model.Driver
 import com.example.f1livetiming.ui.model.DriverPosition
+import com.example.f1livetiming.ui.model.Lap
+import com.example.f1livetiming.utils.ExpectedResponses
 import com.example.f1livetiming.utils.MainDispatcherRule
 import com.example.f1livetiming.utils.enqueueResponse
 import kotlinx.coroutines.flow.first
@@ -70,7 +71,7 @@ class F1LiveTimingRepositoryImplTest {
             onError = {}
         ).first()
 
-        assertEquals(expectedFullResponse, result)
+        assertEquals(ExpectedResponses.expectedFullDriverPositionResponse, result)
 
     }
 
@@ -89,7 +90,7 @@ class F1LiveTimingRepositoryImplTest {
     }
 
     @Test
-    fun f1LiveTimingRepositoryImpl_FullDriverResponse_returnsExpectedList() = runTest {
+    fun f1LiveTimingRepositoryImpl_fullDriverResponse_returnsExpectedList() = runTest {
 
         mockWebServer.enqueueResponse("DriversResponse.json")
 
@@ -98,105 +99,40 @@ class F1LiveTimingRepositoryImplTest {
             onError = {}
         ).first()
 
-        assertEquals(expectedDriverResponse, result)
+        assertEquals(ExpectedResponses.expectedDriverResponse, result)
+
+    }
+
+    @Test
+    fun f1LiveTimingRepositoryImpl_emptyLapsResponse_returnsEmptyList() = runTest {
+
+        mockWebServer.enqueueResponse("EmptyResponse.json")
+
+        val result = repository.getLaps(
+            onIdle = {},
+            onError = {}
+        ).first()
+
+        assertEquals(emptyList<Pair<Lap, Double>>(), result)
+
+    }
+
+    @Test
+    fun f1LiveTimingRepositoryImpl_fullLapsResponse_returnsExpectedList() = runTest{
+
+        mockWebServer.enqueueResponse("LapsResponse.json")
+
+        /* Result for the first 3 drivers only */
+        val result = repository.getLaps(
+            onIdle = {},
+            onError = {}
+        ).first().filter { it.first.driverNumber == 1 || it.first.driverNumber == 2 || it.first.driverNumber == 3 }
+
+        assertEquals(ExpectedResponses.expectedLapsResponse, result)
 
     }
 
 
-    private val expectedDriverResponse = listOf(
-        Driver(
-            driverAcronym = "VER",
-            driverNumber = 1,
-            teamColor = "#3671C6"
-        ),
-        Driver(
-            driverAcronym = "SAR",
-            driverNumber = 2,
-            teamColor = "#64C4FF"
-        )
-    )
 
-    private val expectedFullResponse = listOf(
-        DriverPosition(
-            driverPosition = 1,
-            driverNumber = 1
-        ),
-        DriverPosition(
-            driverPosition = 2,
-            driverNumber = 4
-        ),
-        DriverPosition(
-            driverPosition = 3,
-            driverNumber = 63
-        ),
-        DriverPosition(
-            driverPosition = 4,
-            driverNumber = 44
-        ),
-        DriverPosition(
-            driverPosition = 5,
-            driverNumber = 81
-        ),
-        DriverPosition(
-            driverPosition = 6,
-            driverNumber = 14
-        ),
-        DriverPosition(
-            driverPosition = 7,
-            driverNumber = 18
-        ),
-        DriverPosition(
-            driverPosition = 8,
-            driverNumber = 3
-        ),
-        DriverPosition(
-            driverPosition = 9,
-            driverNumber = 10
-        ),
-        DriverPosition(
-            driverPosition = 10,
-            driverNumber = 31
-        ),
-        DriverPosition(
-            driverPosition = 11,
-            driverNumber = 27
-        ),
-        DriverPosition(
-            driverPosition = 12,
-            driverNumber = 20
-        ),
-        DriverPosition(
-            driverPosition = 13,
-            driverNumber = 77
-        ),
-        DriverPosition(
-            driverPosition = 14,
-            driverNumber = 22
-        ),
-        DriverPosition(
-            driverPosition = 15,
-            driverNumber = 24
-        ),
-        DriverPosition(
-            driverPosition = 16,
-            driverNumber = 55
-        ),
-        DriverPosition(
-            driverPosition = 17,
-            driverNumber = 23
-        ),
-        DriverPosition(
-            driverPosition = 18,
-            driverNumber = 11
-        ),
-        DriverPosition(
-            driverPosition = 19,
-            driverNumber = 16
-        ),
-        DriverPosition(
-            driverPosition = 20,
-            driverNumber = 2
-        )
-    )
 
 }

@@ -14,5 +14,8 @@ class F1Client @Inject constructor(
         sessionKey: String
     ) = f1Service.getDrivers(sessionKey)
 
+    suspend fun getLaps(
+        sessionKey: String
+    ) = f1Service.getLaps(sessionKey)
 
 }

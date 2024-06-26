@@ -8,6 +8,7 @@ import com.example.f1livetiming.ui.liveTimingScreen.LiveTimingUIState
 import com.example.f1livetiming.ui.liveTimingScreen.LiveTimingViewModel
 import com.example.f1livetiming.ui.model.Driver
 import com.example.f1livetiming.ui.model.DriverPosition
+import com.example.f1livetiming.ui.model.Lap
 import com.example.f1livetiming.utils.MainDispatcherRule
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
@@ -53,7 +54,7 @@ class F1LiveTimingViewModelTest {
         }
 
         assertEquals(LiveTimingUIState.Loading, viewModel.liveTimingUIState.value)
-        assertEquals(LiveTimingData(driverDataList = emptyList()),viewModel.liveTimingData.value)
+        assertEquals(LiveTimingData(driverDataList = emptyList()), viewModel.liveTimingData.value)
 
         collectJob.cancel()
         collectJob2.cancel()
@@ -77,7 +78,7 @@ class F1LiveTimingViewModelTest {
         }
 
         assertEquals(LiveTimingUIState.Error("Error"), viewModel.liveTimingUIState.value)
-        assertEquals(LiveTimingData(driverDataList = emptyList()),viewModel.liveTimingData.value)
+        assertEquals(LiveTimingData(driverDataList = emptyList()), viewModel.liveTimingData.value)
 
         collectJob.cancel()
         collectJob2.cancel()
@@ -87,12 +88,56 @@ class F1LiveTimingViewModelTest {
      * [LiveTimingData] should contain the data passed to the repository */
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun f1LiveTimingViewModel_whenApiSendsData_IdleStateAndLiveTimingDataProperlyModeled() = runTest {
+    fun f1LiveTimingViewModel_whenApiSendsData_IdleStateAndLiveTimingDataProperlyModeled() =
+        runTest {
 
             /** Setup the state of the repo first */
             repository.changeResponseState(state = ResponseState.SUCCESS)
             repository.changeDriverPositionList(listOf(DriverPosition(1, 1)))
             repository.changeDriverList(listOf(Driver("VER", 1, "#FF3671C6")))
+            repository.changeLapsList(
+                listOf(
+                    Pair(
+                        first = Lap(
+                            driverNumber = 1,
+                            lapDuration = 79.774,
+                            lapNumber = 66,
+                            sector1Duration = 23.251,
+                            sector2Duration = 32.326,
+                            sector3Duration = 24.197,
+                            segmentsSector1 = listOf(
+                                2049,
+                                2049,
+                                2048,
+                                2048,
+                                2048,
+                                2048,
+                                2048
+                            ),
+                            segmentsSector2 = listOf(
+                                2048,
+                                2048,
+                                2048,
+                                2048,
+                                2048,
+                                2048,
+                                2048,
+                                2048
+                            ),
+                            segmentsSector3 = listOf(
+                                2048,
+                                2048,
+                                2048,
+                                2048,
+                                2064,
+                                2064
+                            )
+
+                        ),
+                        second = 77.776
+                    )
+                )
+            )
 
             val collectJob = launch(UnconfinedTestDispatcher(testScheduler)) {
                 viewModel.liveTimingUIState.collect()
@@ -106,14 +151,18 @@ class F1LiveTimingViewModelTest {
             assertEquals(LiveTimingUIState.Idle, viewModel.liveTimingUIState.value)
 
             assertEquals(
-                LiveTimingData(driverDataList = listOf(
-                    DriverData(
-                        driverNumber = 1,
-                        driverPosition = 1,
-                        driverAcronym = "VER",
-                        teamColor = "#FF3671C6"
+                LiveTimingData(
+                    driverDataList = listOf(
+                        DriverData(
+                            driverNumber = 1,
+                            driverPosition = 1,
+                            driverAcronym = "VER",
+                            teamColor = "#FF3671C6",
+                            bestLap = 77.776,
+                            lastLap = 79.774
+                        )
                     )
-                )),
+                ),
                 viewModel.liveTimingData.value
             )
 

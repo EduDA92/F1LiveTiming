@@ -2,24 +2,21 @@ package com.example.f1livetiming.ui.liveTimingScreen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.f1livetiming.data.repository.F1LiveTimingRepository
-import com.example.f1livetiming.ui.model.DriverPosition
+import com.example.f1livetiming.ui.model.Lap
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.plus
 import javax.inject.Inject
 
 @HiltViewModel
 class LiveTimingViewModel @Inject constructor(
-    private val liveTimingRepository: F1LiveTimingRepository
+     liveTimingRepository: F1LiveTimingRepository
 ) : ViewModel() {
 
 
@@ -46,7 +43,17 @@ class LiveTimingViewModel @Inject constructor(
                     )
                 }
             }
-        )) { positions, drivers ->
+        ),
+            liveTimingRepository.getLaps(
+                onIdle = { _liveTimingUIState.update { LiveTimingUIState.Idle } },
+                onError = { errorMessage ->
+                    _liveTimingUIState.update {
+                        LiveTimingUIState.Error(
+                            errorMessage
+                        )
+                    }
+                }
+            )) { positions, drivers, laps ->
 
 
             val driverDataList = positions.map {
@@ -54,8 +61,10 @@ class LiveTimingViewModel @Inject constructor(
                 DriverData(
                     driverNumber = it.driverNumber,
                     driverPosition = it.driverPosition,
-                    driverAcronym = drivers.first { driver -> driver.driverNumber == it.driverNumber }.driverAcronym,
-                    teamColor = drivers.first { driver -> driver.driverNumber == it.driverNumber }.teamColor
+                    driverAcronym = drivers.firstOrNull { driver -> driver.driverNumber == it.driverNumber }?.driverAcronym ?: "UNK",
+                    teamColor = drivers.firstOrNull { driver -> driver.driverNumber == it.driverNumber }?.teamColor ?: "#000000",
+                    lastLap = laps.firstOrNull { pair: Pair<Lap, Double> -> pair.first.driverNumber == it.driverNumber }?.first?.lapDuration ?: 0.0,
+                    bestLap = laps.firstOrNull { pair: Pair<Lap, Double> -> pair.first.driverNumber == it.driverNumber }?.second ?: 0.0
                 )
 
             }
@@ -88,5 +97,7 @@ data class DriverData(
     val driverNumber: Int,
     val driverPosition: Int,
     val driverAcronym: String,
-    val teamColor: String
+    val teamColor: String,
+    val lastLap: Double,
+    val bestLap: Double
 )
