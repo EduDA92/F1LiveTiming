@@ -1,5 +1,7 @@
 package com.example.f1livetiming.ui.liveTimingScreen
 
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -43,6 +45,7 @@ fun LiveTimingRoute(
 
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun LiveTimingScreen(
     modifier: Modifier = Modifier,
@@ -65,10 +68,10 @@ fun LiveTimingScreen(
                     verticalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
 
-                    items(items = liveTimingData.driverDataList) {
+                    items(items = liveTimingData.driverDataList, key = { it.driverNumber }) {
 
                         Row(
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier.fillMaxWidth().animateItemPlacement(tween(250)),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
 
