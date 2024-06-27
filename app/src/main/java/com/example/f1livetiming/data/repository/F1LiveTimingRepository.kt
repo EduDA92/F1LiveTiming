@@ -3,6 +3,7 @@ package com.example.f1livetiming.data.repository
 import com.example.f1livetiming.ui.model.Driver
 import com.example.f1livetiming.ui.model.DriverPosition
 import com.example.f1livetiming.ui.model.Lap
+import com.example.f1livetiming.ui.model.Stint
 import kotlinx.coroutines.flow.Flow
 
 interface F1LiveTimingRepository {
@@ -21,4 +22,10 @@ interface F1LiveTimingRepository {
         onIdle: () -> Unit,
         onError: (String) -> Unit
     ): Flow<List<Pair<Lap, Double>>>
+
+    fun getStints(
+        onIdle: () -> Unit,
+        onError: (String) -> Unit
+    ): Flow<List<Stint>>
+
 }

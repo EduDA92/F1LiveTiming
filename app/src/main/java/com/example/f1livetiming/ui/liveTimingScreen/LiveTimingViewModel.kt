@@ -53,7 +53,17 @@ class LiveTimingViewModel @Inject constructor(
                         )
                     }
                 }
-            )) { positions, drivers, laps ->
+            ),
+            liveTimingRepository.getStints(
+                onIdle = { _liveTimingUIState.update { LiveTimingUIState.Idle } },
+                onError = { errorMessage ->
+                    _liveTimingUIState.update {
+                        LiveTimingUIState.Error(
+                            errorMessage
+                        )
+                    }
+                }
+            )) { positions, drivers, laps, stints ->
 
 
             val driverDataList = positions.map {
@@ -64,7 +74,13 @@ class LiveTimingViewModel @Inject constructor(
                     driverAcronym = drivers.firstOrNull { driver -> driver.driverNumber == it.driverNumber }?.driverAcronym ?: "UNK",
                     teamColor = drivers.firstOrNull { driver -> driver.driverNumber == it.driverNumber }?.teamColor ?: "#000000",
                     lastLap = laps.firstOrNull { pair: Pair<Lap, Double> -> pair.first.driverNumber == it.driverNumber }?.first?.lapDuration ?: 0.0,
-                    bestLap = laps.firstOrNull { pair: Pair<Lap, Double> -> pair.first.driverNumber == it.driverNumber }?.second ?: 0.0
+                    bestLap = laps.firstOrNull { pair: Pair<Lap, Double> -> pair.first.driverNumber == it.driverNumber }?.second ?: 0.0,
+                    tireCompound = stints.firstOrNull { stint -> stint.driverNumber == it.driverNumber }?.compound ?: "UNK",
+                    pitNumber = stints.firstOrNull{ stint -> stint.driverNumber == it.driverNumber }?.stintNumber?.minus(1) ?: 0,
+                    stintLaps = stints.firstOrNull{ stint -> stint.driverNumber == it.driverNumber }?.lapEnd?.minus(
+                        stints.firstOrNull{ stint -> stint.driverNumber == it.driverNumber }?.lapStart ?: 0
+                    )?.plus(stints.firstOrNull{ stint -> stint.driverNumber == it.driverNumber }?.tyreAgeAtStart ?: 0) ?: 0
+
                 )
 
             }
@@ -99,5 +115,8 @@ data class DriverData(
     val driverAcronym: String,
     val teamColor: String,
     val lastLap: Double,
-    val bestLap: Double
+    val bestLap: Double,
+    val tireCompound: String,
+    val stintLaps: Int,
+    val pitNumber: Int
 )

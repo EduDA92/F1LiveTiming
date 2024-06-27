@@ -78,7 +78,15 @@ fun LiveTimingScreen(
                                 color = Color(it.teamColor.toColorInt())
                             )
 
-                            Spacer(modifier = Modifier.size(20.dp))
+                            Spacer(modifier = Modifier.size(10.dp))
+
+                            DriverStint(
+                                tireCompound = it.tireCompound,
+                                stintLaps = it.stintLaps,
+                                pitNumber = it.pitNumber
+                            )
+
+                            Spacer(modifier = Modifier.size(10.dp))
 
                             DriverLaps(lastLap = it.lastLap, bestLap = it.bestLap)
 
@@ -111,7 +119,10 @@ fun PreviewFullListLiveTimingScreen() {
                     driverAcronym = "VER",
                     teamColor = "#3671C6",
                     lastLap = 79.774,
-                    bestLap = 77.776
+                    bestLap = 77.776,
+                    tireCompound = "SOFT",
+                    pitNumber = 3,
+                    stintLaps = 23
                 ),
                 DriverData(
                     driverNumber = 14,
@@ -119,7 +130,10 @@ fun PreviewFullListLiveTimingScreen() {
                     driverAcronym = "ALO",
                     teamColor = "#229971",
                     lastLap = 79.743,
-                    bestLap = 78.334
+                    bestLap = 78.334,
+                    tireCompound = "HARD",
+                    pitNumber = 3,
+                    stintLaps = 23
                 ),
                 DriverData(
                     driverNumber = 44,
@@ -127,7 +141,10 @@ fun PreviewFullListLiveTimingScreen() {
                     driverAcronym = "HAM",
                     teamColor = "#27F4D2",
                     lastLap = 80.041,
-                    bestLap = 77.809
+                    bestLap = 77.809,
+                    tireCompound = "WET",
+                    pitNumber = 3,
+                    stintLaps = 23
                 )
             )
         )

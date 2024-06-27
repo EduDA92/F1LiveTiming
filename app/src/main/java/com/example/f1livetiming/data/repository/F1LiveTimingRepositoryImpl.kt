@@ -7,6 +7,7 @@ import com.example.f1livetiming.data.network.F1Client
 import com.example.f1livetiming.ui.model.Driver
 import com.example.f1livetiming.ui.model.DriverPosition
 import com.example.f1livetiming.ui.model.Lap
+import com.example.f1livetiming.ui.model.Stint
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -159,4 +160,44 @@ class F1LiveTimingRepositoryImpl @Inject constructor(
             }
 
         }.flowOn(ioDispatcher)
+
+    /** Get the stint list from the API and return a list with the latest [Stint] for each driver */
+
+    override fun getStints(onIdle: () -> Unit, onError: (String) -> Unit): Flow<List<Stint>> = flow<List<Stint>> {
+
+        while (true){
+
+            try{
+
+                val stintsResponse = f1Client.getStints("latest")
+
+                if(stintsResponse.isSuccessful){
+
+                    val driverStints = stintsResponse.body()!!.groupBy { it.driverNumber }
+                    val driverStintsList = mutableListOf<Stint>()
+
+                    driverStints.forEach { (_, stintList) ->
+
+                        driverStintsList.add(stintList.maxByOrNull { it.stintNumber }!!.asDomain())
+
+                    }
+
+                    emit(driverStintsList)
+                    onIdle()
+
+                } else {
+                    onError(stintsResponse.errorBody().toString())
+                }
+
+
+            } catch (e: Exception) {
+                onError(e.message.toString())
+            }
+
+
+            delay(9000)
+        }
+
+
+    }.flowOn(ioDispatcher)
 }

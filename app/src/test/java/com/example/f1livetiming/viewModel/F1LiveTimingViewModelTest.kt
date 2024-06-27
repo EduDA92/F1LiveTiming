@@ -9,6 +9,7 @@ import com.example.f1livetiming.ui.liveTimingScreen.LiveTimingViewModel
 import com.example.f1livetiming.ui.model.Driver
 import com.example.f1livetiming.ui.model.DriverPosition
 import com.example.f1livetiming.ui.model.Lap
+import com.example.f1livetiming.ui.model.Stint
 import com.example.f1livetiming.utils.MainDispatcherRule
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
@@ -138,6 +139,7 @@ class F1LiveTimingViewModelTest {
                     )
                 )
             )
+            repository.changeStintList(listOf(Stint(compound = "WET", driverNumber = 1, lapEnd = 24, lapStart = 1, stintNumber = 4, tyreAgeAtStart = 2)))
 
             val collectJob = launch(UnconfinedTestDispatcher(testScheduler)) {
                 viewModel.liveTimingUIState.collect()
@@ -159,7 +161,10 @@ class F1LiveTimingViewModelTest {
                             driverAcronym = "VER",
                             teamColor = "#FF3671C6",
                             bestLap = 77.776,
-                            lastLap = 79.774
+                            lastLap = 79.774,
+                            tireCompound = "WET",
+                            pitNumber = 3,
+                            stintLaps = 23
                         )
                     )
                 ),
@@ -170,8 +175,8 @@ class F1LiveTimingViewModelTest {
             collectJob2.cancel()
         }
 
-    /** When there is no lap data associated to a driver the default lap data sent to the UI
-     * will be 0.0 */
+    /** When there is no lap/Stint data associated to a driver the default lap data sent to the UI
+     * will be 0.0, and the stint data the default one too */
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun f1LiveTimingViewModel_whenApiSendsIncompleteLapData_lapDataIsDefaultData() = runTest {
@@ -221,6 +226,8 @@ class F1LiveTimingViewModelTest {
                 second = 77.776
             )) )
 
+        repository.changeStintList(listOf(Stint(compound = "WET", driverNumber = 33, lapEnd = 24, lapStart = 1, stintNumber = 4, tyreAgeAtStart = 2)))
+
         val collectJob = launch(UnconfinedTestDispatcher(testScheduler)) {
             viewModel.liveTimingUIState.collect()
         }
@@ -240,7 +247,10 @@ class F1LiveTimingViewModelTest {
                         driverAcronym = "VER",
                         teamColor = "#FF3671C6",
                         bestLap = 0.0,
-                        lastLap = 0.0
+                        lastLap = 0.0,
+                        tireCompound = "UNK",
+                        pitNumber = 0,
+                        stintLaps = 0
                     )
                 )
             ),
@@ -305,6 +315,8 @@ class F1LiveTimingViewModelTest {
                 )
             ))
 
+        repository.changeStintList(listOf(Stint(compound = "WET", driverNumber = 1, lapEnd = 24, lapStart = 1, stintNumber = 4, tyreAgeAtStart = 2)))
+
         val collectJob = launch(UnconfinedTestDispatcher(testScheduler)) {
             viewModel.liveTimingUIState.collect()
         }
@@ -324,7 +336,10 @@ class F1LiveTimingViewModelTest {
                         driverAcronym = "VER",
                         teamColor = "#FF3671C6",
                         bestLap = 0.0,
-                        lastLap = 0.0
+                        lastLap = 0.0,
+                        tireCompound = "WET",
+                        pitNumber = 3,
+                        stintLaps = 23
                     )
                 )
             ),

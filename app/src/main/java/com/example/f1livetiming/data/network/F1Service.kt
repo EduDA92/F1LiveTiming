@@ -3,6 +3,7 @@ package com.example.f1livetiming.data.network
 import com.example.f1livetiming.data.network.model.DriverDTO
 import com.example.f1livetiming.data.network.model.DriverPositionDTO
 import com.example.f1livetiming.data.network.model.LapDTO
+import com.example.f1livetiming.data.network.model.StintDTO
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -24,5 +25,10 @@ interface F1Service {
     suspend fun getLaps(
         @Query("session_key") sessionKey: String
     ): Response<List<LapDTO>>
+
+    @GET("stints")
+    suspend fun getStints(
+        @Query("session_key") sessionKey: String
+    ): Response<List<StintDTO>>
 
 }

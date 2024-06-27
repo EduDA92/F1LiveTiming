@@ -3,6 +3,7 @@ package com.example.f1livetiming.utils
 import com.example.f1livetiming.ui.model.Driver
 import com.example.f1livetiming.ui.model.DriverPosition
 import com.example.f1livetiming.ui.model.Lap
+import com.example.f1livetiming.ui.model.Stint
 
 val expectedFullDriverPositionResponse = listOf(
     DriverPosition(
@@ -259,5 +260,32 @@ val expectedNullLapDurationResponse = listOf(
 
         ),
         second = 0.0
+    )
+)
+
+val expectedStintsResponse = listOf(
+    Stint(
+        driverNumber = 1,
+        stintNumber = 3,
+        lapEnd = 67,
+        lapStart = 45,
+        compound = "SOFT",
+        tyreAgeAtStart = 0
+    ),
+    Stint(
+        driverNumber = 2,
+        stintNumber = 3,
+        lapEnd = 65,
+        lapStart = 35,
+        compound = "HARD",
+        tyreAgeAtStart = 0
+    ),
+    Stint(
+        driverNumber = 3,
+        stintNumber = 3,
+        lapEnd = 66,
+        lapStart = 43,
+        compound = "HARD",
+        tyreAgeAtStart = 0
     )
 )

@@ -5,12 +5,14 @@ import com.example.f1livetiming.data.network.F1Service
 import com.example.f1livetiming.data.repository.F1LiveTimingRepositoryImpl
 import com.example.f1livetiming.ui.model.DriverPosition
 import com.example.f1livetiming.ui.model.Lap
+import com.example.f1livetiming.ui.model.Stint
 import com.example.f1livetiming.utils.MainDispatcherRule
 import com.example.f1livetiming.utils.enqueueResponse
 import com.example.f1livetiming.utils.expectedDriverResponse
 import com.example.f1livetiming.utils.expectedFullDriverPositionResponse
 import com.example.f1livetiming.utils.expectedLapsResponse
 import com.example.f1livetiming.utils.expectedNullLapDurationResponse
+import com.example.f1livetiming.utils.expectedStintsResponse
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.Json
@@ -147,6 +149,33 @@ class F1LiveTimingRepositoryImplTest {
 
         assertEquals(expectedNullLapDurationResponse, result)
 
+    }
+
+    @Test
+    fun f1LiveTimingRepositoryImpl_emptyStintResponse_returnsEmptyList() = runTest {
+
+        mockWebServer.enqueueResponse("EmptyResponse.json")
+
+        val result = repository.getStints(
+            onIdle = {},
+            onError = {}
+        ).first()
+
+        assertEquals(emptyList<Stint>(), result)
+
+    }
+
+    @Test
+    fun f1LiveTimingRepositoryImpl_fullStintResponse_returnsExpectedList() = runTest {
+
+        mockWebServer.enqueueResponse("StintsResponse.json")
+
+        val result = repository.getStints(
+            onIdle = {},
+            onError = {}
+        ).first().filter { it.driverNumber == 1 || it.driverNumber == 2 || it.driverNumber == 3 }.sortedBy { it.driverNumber }
+
+        assertEquals(expectedStintsResponse, result)
     }
 
 

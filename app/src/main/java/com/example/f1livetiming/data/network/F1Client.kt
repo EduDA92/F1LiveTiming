@@ -18,4 +18,8 @@ class F1Client @Inject constructor(
         sessionKey: String
     ) = f1Service.getLaps(sessionKey)
 
+    suspend fun getStints(
+        sessionKey: String
+    ) = f1Service.getStints(sessionKey)
+
 }
