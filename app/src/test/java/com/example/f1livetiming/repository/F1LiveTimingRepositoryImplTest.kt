@@ -5,9 +5,12 @@ import com.example.f1livetiming.data.network.F1Service
 import com.example.f1livetiming.data.repository.F1LiveTimingRepositoryImpl
 import com.example.f1livetiming.ui.model.DriverPosition
 import com.example.f1livetiming.ui.model.Lap
-import com.example.f1livetiming.utils.ExpectedResponses
 import com.example.f1livetiming.utils.MainDispatcherRule
 import com.example.f1livetiming.utils.enqueueResponse
+import com.example.f1livetiming.utils.expectedDriverResponse
+import com.example.f1livetiming.utils.expectedFullDriverPositionResponse
+import com.example.f1livetiming.utils.expectedLapsResponse
+import com.example.f1livetiming.utils.expectedNullLapDurationResponse
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.Json
@@ -71,7 +74,7 @@ class F1LiveTimingRepositoryImplTest {
             onError = {}
         ).first()
 
-        assertEquals(ExpectedResponses.expectedFullDriverPositionResponse, result)
+        assertEquals(expectedFullDriverPositionResponse, result)
 
     }
 
@@ -99,7 +102,7 @@ class F1LiveTimingRepositoryImplTest {
             onError = {}
         ).first()
 
-        assertEquals(ExpectedResponses.expectedDriverResponse, result)
+        assertEquals(expectedDriverResponse, result)
 
     }
 
@@ -128,7 +131,7 @@ class F1LiveTimingRepositoryImplTest {
             onError = {}
         ).first().filter { it.first.driverNumber == 1 || it.first.driverNumber == 2 || it.first.driverNumber == 3 }
 
-        assertEquals(ExpectedResponses.expectedLapsResponse, result)
+        assertEquals(expectedLapsResponse, result)
 
     }
 
@@ -142,7 +145,7 @@ class F1LiveTimingRepositoryImplTest {
             onError = {}
         ).first()
 
-        assertEquals(ExpectedResponses.expectedNullLapDurationResponse, result)
+        assertEquals(expectedNullLapDurationResponse, result)
 
     }
 

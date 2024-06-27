@@ -2,8 +2,7 @@ package com.example.f1livetiming.data.repository
 
 import com.example.f1livetiming.data.dispatchers.Dispatcher
 import com.example.f1livetiming.data.dispatchers.F1LiveTimingDispatchers
-import com.example.f1livetiming.data.mapper.F1DriverMapper.asDomain
-import com.example.f1livetiming.data.mapper.F1LapMapper.asDomain
+import com.example.f1livetiming.data.mapper.asDomain
 import com.example.f1livetiming.data.network.F1Client
 import com.example.f1livetiming.ui.model.Driver
 import com.example.f1livetiming.ui.model.DriverPosition

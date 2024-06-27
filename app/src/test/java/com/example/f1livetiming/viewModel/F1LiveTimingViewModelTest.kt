@@ -254,6 +254,7 @@ class F1LiveTimingViewModelTest {
 
     /** When the data lap data from the API contains null lap duration the default values for the UI
      * will be 0.0 for best & last lap */
+    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun f1LiveTimingViewModel_whenApiSendNullLapTimesData_lapDataIsDefaultData() = runTest {
 
