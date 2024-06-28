@@ -26,6 +26,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.f1livetiming.ui.liveTimingScreen.composables.DriverLaps
 import com.example.f1livetiming.ui.liveTimingScreen.composables.DriverTag
+import kotlinx.collections.immutable.persistentListOf
 
 
 @Composable
@@ -115,7 +116,7 @@ fun PreviewFullListLiveTimingScreen() {
     LiveTimingScreen(
         state = LiveTimingUIState.Idle,
         liveTimingData = LiveTimingData(
-            listOf(
+            persistentListOf(
                 DriverData(
                     driverNumber = 1,
                     driverPosition = 1,
@@ -162,7 +163,7 @@ fun PreviewLiveTimingScreen() {
 
     LiveTimingScreen(
         state = LiveTimingUIState.Loading,
-        liveTimingData = LiveTimingData(emptyList())
+        liveTimingData = LiveTimingData(persistentListOf())
     )
 
 }

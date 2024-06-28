@@ -11,6 +11,7 @@ import com.example.f1livetiming.ui.model.DriverPosition
 import com.example.f1livetiming.ui.model.Lap
 import com.example.f1livetiming.ui.model.Stint
 import com.example.f1livetiming.utils.MainDispatcherRule
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -55,7 +56,7 @@ class F1LiveTimingViewModelTest {
         }
 
         assertEquals(LiveTimingUIState.Loading, viewModel.liveTimingUIState.value)
-        assertEquals(LiveTimingData(driverDataList = emptyList()), viewModel.liveTimingData.value)
+        assertEquals(LiveTimingData(driverDataList = persistentListOf()), viewModel.liveTimingData.value)
 
         collectJob.cancel()
         collectJob2.cancel()
@@ -79,7 +80,7 @@ class F1LiveTimingViewModelTest {
         }
 
         assertEquals(LiveTimingUIState.Error("Error"), viewModel.liveTimingUIState.value)
-        assertEquals(LiveTimingData(driverDataList = emptyList()), viewModel.liveTimingData.value)
+        assertEquals(LiveTimingData(driverDataList = persistentListOf()), viewModel.liveTimingData.value)
 
         collectJob.cancel()
         collectJob2.cancel()
@@ -154,7 +155,7 @@ class F1LiveTimingViewModelTest {
 
             assertEquals(
                 LiveTimingData(
-                    driverDataList = listOf(
+                    driverDataList = persistentListOf(
                         DriverData(
                             driverNumber = 1,
                             driverPosition = 1,
@@ -164,7 +165,7 @@ class F1LiveTimingViewModelTest {
                             lastLap = 79.774,
                             tireCompound = "WET",
                             pitNumber = 3,
-                            stintLaps = 23
+                            stintLaps = 25
                         )
                     )
                 ),
@@ -240,7 +241,7 @@ class F1LiveTimingViewModelTest {
 
         assertEquals(
             LiveTimingData(
-                driverDataList = listOf(
+                driverDataList = persistentListOf(
                     DriverData(
                         driverNumber = 1,
                         driverPosition = 1,
@@ -329,7 +330,7 @@ class F1LiveTimingViewModelTest {
 
         assertEquals(
             LiveTimingData(
-                driverDataList = listOf(
+                driverDataList = persistentListOf(
                     DriverData(
                         driverNumber = 1,
                         driverPosition = 1,
@@ -339,7 +340,7 @@ class F1LiveTimingViewModelTest {
                         lastLap = 0.0,
                         tireCompound = "WET",
                         pitNumber = 3,
-                        stintLaps = 23
+                        stintLaps = 25
                     )
                 )
             ),

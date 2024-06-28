@@ -1,10 +1,14 @@
 package com.example.f1livetiming.ui.liveTimingScreen
 
+import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.f1livetiming.data.repository.F1LiveTimingRepository
 import com.example.f1livetiming.ui.model.Lap
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -86,14 +90,14 @@ class LiveTimingViewModel @Inject constructor(
             }
 
             LiveTimingData(
-                driverDataList = driverDataList
+                driverDataList = driverDataList.toImmutableList()
             )
 
         }.stateIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(),
             LiveTimingData(
-                driverDataList = emptyList()
+                driverDataList = persistentListOf()
             )
         )
 
@@ -106,7 +110,7 @@ sealed interface LiveTimingUIState {
 }
 
 data class LiveTimingData(
-    val driverDataList: List<DriverData>
+    val driverDataList: ImmutableList<DriverData>
 )
 
 data class DriverData(
