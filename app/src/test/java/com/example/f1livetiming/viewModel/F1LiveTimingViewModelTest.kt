@@ -264,10 +264,12 @@ class F1LiveTimingViewModelTest {
 
 
     /** When the data lap data from the API contains null lap duration the default values for the UI
-     * will be 0.0 for best & last lap */
+     * will be 0.0 for best & last lap Also when it sends Null data for Stint compound and tyre age
+     * default values will be "UNK" and 0 respectively */
+    
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun f1LiveTimingViewModel_whenApiSendNullLapTimesData_lapDataIsDefaultData() = runTest {
+    fun f1LiveTimingViewModel_whenApiSendNullData_lapDataIsDefaultData() = runTest {
 
         /** Setup the state of the repo first */
         repository.changeResponseState(state = ResponseState.SUCCESS)
@@ -316,7 +318,7 @@ class F1LiveTimingViewModelTest {
                 )
             ))
 
-        repository.changeStintList(listOf(Stint(compound = "WET", driverNumber = 1, lapEnd = 24, lapStart = 1, stintNumber = 4, tyreAgeAtStart = 2)))
+        repository.changeStintList(listOf(Stint(compound = null, driverNumber = 1, lapEnd = 24, lapStart = 1, stintNumber = 4, tyreAgeAtStart = null)))
 
         val collectJob = launch(UnconfinedTestDispatcher(testScheduler)) {
             viewModel.liveTimingUIState.collect()
@@ -338,9 +340,9 @@ class F1LiveTimingViewModelTest {
                         teamColor = "#FF3671C6",
                         bestLap = 0.0,
                         lastLap = 0.0,
-                        tireCompound = "WET",
+                        tireCompound = "UNK",
                         pitNumber = 3,
-                        stintLaps = 25
+                        stintLaps = 23
                     )
                 )
             ),
