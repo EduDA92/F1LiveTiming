@@ -1,4 +1,4 @@
-package com.example.f1livetiming.ui.liveTimingScreen
+package com.example.f1livetiming.ui.liveTimingScreen.composables
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
@@ -61,15 +61,21 @@ fun DriverStint(
                 )
             }
 
-            else -> {/** TODO UNK STATE */   }
+            else -> {
+                Image(
+                    painter = painterResource(id = R.drawable.unknown),
+                    contentDescription = "", modifier = Modifier.size(36.dp)
+                )
+            }
         }
 
         Spacer(modifier = Modifier.size(4.dp))
 
         Column {
             val stintLapsString = String.format("L %d", stintLaps)
+            val pitNumberString = String.format("PIT %d", pitNumber)
             Text(text = stintLapsString)
-            Text(text = pitNumber.toString(), color = Color.Gray)
+            Text(text = pitNumberString, color = Color.Gray)
         }
 
     }
