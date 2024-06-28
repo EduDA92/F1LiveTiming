@@ -73,7 +73,6 @@ class F1LiveTimingRepositoryImpl @Inject constructor(
 
                     }
 
-                    Log.d(TAG, "getDriversPositions")
                     emit(driverPositionList.sortedBy { it.driverPosition })
                     onIdle()
 
@@ -104,7 +103,6 @@ class F1LiveTimingRepositoryImpl @Inject constructor(
         val driverResponse = f1Client.getDrivers("latest")
 
         if (driverResponse.isSuccessful) {
-            Log.d(TAG, "getDrivers")
             emit(driverResponse.body()!!.asDomain())
             onIdle()
         } else {
@@ -164,7 +162,6 @@ class F1LiveTimingRepositoryImpl @Inject constructor(
 
                         }
 
-                        Log.d(TAG, "getDriversLapList")
                         emit(driverLapsList)
                         onIdle()
 
@@ -203,7 +200,6 @@ class F1LiveTimingRepositoryImpl @Inject constructor(
 
                     }
 
-                    Log.d(TAG, "getStints")
                     emit(driverStintsList)
                     onIdle()
 

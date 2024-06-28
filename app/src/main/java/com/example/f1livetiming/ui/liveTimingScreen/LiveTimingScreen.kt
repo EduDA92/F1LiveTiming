@@ -128,6 +128,9 @@ fun PreviewFullListLiveTimingScreen() {
                     tireCompound = "SOFT",
                     pitNumber = 3,
                     stintLaps = 23,
+                    firstSectorDuration = 22.5,
+                    secondSectorDuration = 22.6,
+                    thirdSectorDuration = 76.9,
                     firstMicroSectors = persistentListOf(0, 2048, 2049, 2050, 2051, 2052, 2064, 2068),
                     secondMicroSectors = persistentListOf(0, 2048, 2049, 2050, 2051, 2052, 2064, 2068),
                     thirdMicroSectors = persistentListOf(0, 2048, 2049, 2050, 2051, 2052, 2064, 2068)
@@ -142,6 +145,9 @@ fun PreviewFullListLiveTimingScreen() {
                     tireCompound = "HARD",
                     pitNumber = 3,
                     stintLaps = 23,
+                    firstSectorDuration = 22.5,
+                    secondSectorDuration = 22.6,
+                    thirdSectorDuration = 76.9,
                     firstMicroSectors = persistentListOf(0, 2048, 2049, 2050, 2051, 2052, 2064, 2068),
                     secondMicroSectors = persistentListOf(0, 2048, 2049, 2050, 2051, 2052, 2064, 2068),
                     thirdMicroSectors = persistentListOf(0, 2048, 2049, 2050, 2051, 2052, 2064, 2068)
@@ -156,6 +162,9 @@ fun PreviewFullListLiveTimingScreen() {
                     tireCompound = "WET",
                     pitNumber = 3,
                     stintLaps = 23,
+                    firstSectorDuration = 22.5,
+                    secondSectorDuration = 22.6,
+                    thirdSectorDuration = 76.9,
                     firstMicroSectors = persistentListOf(0, 2048, 2049, 2050, 2051, 2052, 2064, 2068),
                     secondMicroSectors = persistentListOf(0, 2048, 2049, 2050, 2051, 2052, 2064, 2068),
                     thirdMicroSectors = persistentListOf(0, 2048, 2049, 2050, 2051, 2052, 2064, 2068)

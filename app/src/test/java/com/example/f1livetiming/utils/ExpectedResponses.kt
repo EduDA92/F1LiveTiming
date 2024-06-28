@@ -448,6 +448,9 @@ val expectedStintsResponse = listOf(
                 tireCompound = "WET",
                 pitNumber = 3,
                 stintLaps = 25,
+                firstSectorDuration = 24.062,
+                secondSectorDuration = 32.054,
+                thirdSectorDuration = 23.658,
                 firstMicroSectors = persistentListOf(
                     2048,
                     2049,
@@ -491,6 +494,9 @@ val incompleteDataExpectedResponse = LiveTimingData(
             tireCompound = "UNK",
             pitNumber = 0,
             stintLaps = 0,
+            firstSectorDuration = 0.0,
+            secondSectorDuration = 0.0,
+            thirdSectorDuration = 0.0,
             firstMicroSectors = persistentListOf(),
             secondMicroSectors = persistentListOf(),
             thirdMicroSectors = persistentListOf()
@@ -510,6 +516,9 @@ val nullDataExpectedResponse = LiveTimingData(
             tireCompound = "UNK",
             pitNumber = 3,
             stintLaps = 23,
+            firstSectorDuration = 0.0,
+            secondSectorDuration = 32.054,
+            thirdSectorDuration = 23.658,
             firstMicroSectors = persistentListOf(
                 2048,
                 2049,

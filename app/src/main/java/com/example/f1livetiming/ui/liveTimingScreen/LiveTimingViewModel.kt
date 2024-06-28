@@ -84,6 +84,9 @@ class LiveTimingViewModel @Inject constructor(
                     stintLaps = stints.firstOrNull{ stint -> stint.driverNumber == it.driverNumber }?.lapEnd?.minus(
                         stints.firstOrNull{ stint -> stint.driverNumber == it.driverNumber }?.lapStart ?: 0
                     )?.plus(stints.firstOrNull{ stint -> stint.driverNumber == it.driverNumber }?.tyreAgeAtStart ?: 0) ?: 0,
+                    firstSectorDuration = laps.firstOrNull { triple -> triple.second.driverNumber == it.driverNumber }?.second?.sector1Duration ?: 0.0,
+                    secondSectorDuration = laps.firstOrNull { triple -> triple.second.driverNumber == it.driverNumber }?.second?.sector2Duration ?: 0.0,
+                    thirdSectorDuration = laps.firstOrNull { triple -> triple.second.driverNumber == it.driverNumber }?.second?.sector3Duration ?: 0.0,
                     firstMicroSectors = laps.firstOrNull { triple -> triple.second.driverNumber == it.driverNumber }?.second?.segmentsSector1?.map{microsector ->
                         microsector ?: 0
                     }?.toImmutableList() ?: persistentListOf(),
@@ -131,6 +134,9 @@ data class DriverData(
     val tireCompound: String,
     val stintLaps: Int,
     val pitNumber: Int,
+    val firstSectorDuration: Double,
+    val secondSectorDuration: Double,
+    val thirdSectorDuration: Double,
     val firstMicroSectors: ImmutableList<Int>,
     val secondMicroSectors: ImmutableList<Int>,
     val thirdMicroSectors: ImmutableList<Int>
