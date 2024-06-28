@@ -77,14 +77,22 @@ class LiveTimingViewModel @Inject constructor(
                     driverPosition = it.driverPosition,
                     driverAcronym = drivers.firstOrNull { driver -> driver.driverNumber == it.driverNumber }?.driverAcronym ?: "UNK",
                     teamColor = drivers.firstOrNull { driver -> driver.driverNumber == it.driverNumber }?.teamColor ?: "#000000",
-                    lastLap = laps.firstOrNull { pair: Pair<Lap, Double> -> pair.first.driverNumber == it.driverNumber }?.first?.lapDuration ?: 0.0,
-                    bestLap = laps.firstOrNull { pair: Pair<Lap, Double> -> pair.first.driverNumber == it.driverNumber }?.second ?: 0.0,
+                    lastLap = laps.firstOrNull { triple -> triple.first.driverNumber == it.driverNumber }?.first?.lapDuration ?: 0.0,
+                    bestLap = laps.firstOrNull { triple -> triple.first.driverNumber == it.driverNumber }?.third ?: 0.0,
                     tireCompound = stints.firstOrNull { stint -> stint.driverNumber == it.driverNumber }?.compound ?: "UNK",
                     pitNumber = stints.firstOrNull{ stint -> stint.driverNumber == it.driverNumber }?.stintNumber?.minus(1) ?: 0,
                     stintLaps = stints.firstOrNull{ stint -> stint.driverNumber == it.driverNumber }?.lapEnd?.minus(
                         stints.firstOrNull{ stint -> stint.driverNumber == it.driverNumber }?.lapStart ?: 0
-                    )?.plus(stints.firstOrNull{ stint -> stint.driverNumber == it.driverNumber }?.tyreAgeAtStart ?: 0) ?: 0
-
+                    )?.plus(stints.firstOrNull{ stint -> stint.driverNumber == it.driverNumber }?.tyreAgeAtStart ?: 0) ?: 0,
+                    firstMicroSectors = laps.firstOrNull { triple -> triple.second.driverNumber == it.driverNumber }?.second?.segmentsSector1?.map{microsector ->
+                        microsector ?: 0
+                    }?.toImmutableList() ?: persistentListOf(),
+                    secondMicroSectors = laps.firstOrNull { triple -> triple.second.driverNumber == it.driverNumber }?.second?.segmentsSector2?.map{microsector ->
+                        microsector ?: 0
+                    }?.toImmutableList() ?: persistentListOf(),
+                    thirdMicroSectors = laps.firstOrNull { triple -> triple.second.driverNumber == it.driverNumber }?.second?.segmentsSector3?.map{microsector ->
+                        microsector ?: 0
+                    }?.toImmutableList() ?: persistentListOf(),
                 )
 
             }
@@ -122,5 +130,8 @@ data class DriverData(
     val bestLap: Double,
     val tireCompound: String,
     val stintLaps: Int,
-    val pitNumber: Int
+    val pitNumber: Int,
+    val firstMicroSectors: ImmutableList<Int>,
+    val secondMicroSectors: ImmutableList<Int>,
+    val thirdMicroSectors: ImmutableList<Int>
 )

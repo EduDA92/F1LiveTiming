@@ -21,7 +21,7 @@ interface F1LiveTimingRepository {
     fun getLaps(
         onIdle: () -> Unit,
         onError: (String) -> Unit
-    ): Flow<List<Pair<Lap, Double>>>
+    ): Flow<List<Triple<Lap, Lap, Double>>>
 
     fun getStints(
         onIdle: () -> Unit,

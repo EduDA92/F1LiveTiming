@@ -25,6 +25,7 @@ import androidx.core.graphics.toColorInt
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.f1livetiming.ui.liveTimingScreen.composables.DriverLaps
+import com.example.f1livetiming.ui.liveTimingScreen.composables.DriverStint
 import com.example.f1livetiming.ui.liveTimingScreen.composables.DriverTag
 import kotlinx.collections.immutable.persistentListOf
 
@@ -126,7 +127,10 @@ fun PreviewFullListLiveTimingScreen() {
                     bestLap = 77.776,
                     tireCompound = "SOFT",
                     pitNumber = 3,
-                    stintLaps = 23
+                    stintLaps = 23,
+                    firstMicroSectors = persistentListOf(0, 2048, 2049, 2050, 2051, 2052, 2064, 2068),
+                    secondMicroSectors = persistentListOf(0, 2048, 2049, 2050, 2051, 2052, 2064, 2068),
+                    thirdMicroSectors = persistentListOf(0, 2048, 2049, 2050, 2051, 2052, 2064, 2068)
                 ),
                 DriverData(
                     driverNumber = 14,
@@ -137,7 +141,10 @@ fun PreviewFullListLiveTimingScreen() {
                     bestLap = 78.334,
                     tireCompound = "HARD",
                     pitNumber = 3,
-                    stintLaps = 23
+                    stintLaps = 23,
+                    firstMicroSectors = persistentListOf(0, 2048, 2049, 2050, 2051, 2052, 2064, 2068),
+                    secondMicroSectors = persistentListOf(0, 2048, 2049, 2050, 2051, 2052, 2064, 2068),
+                    thirdMicroSectors = persistentListOf(0, 2048, 2049, 2050, 2051, 2052, 2064, 2068)
                 ),
                 DriverData(
                     driverNumber = 44,
@@ -148,7 +155,10 @@ fun PreviewFullListLiveTimingScreen() {
                     bestLap = 77.809,
                     tireCompound = "WET",
                     pitNumber = 3,
-                    stintLaps = 23
+                    stintLaps = 23,
+                    firstMicroSectors = persistentListOf(0, 2048, 2049, 2050, 2051, 2052, 2064, 2068),
+                    secondMicroSectors = persistentListOf(0, 2048, 2049, 2050, 2051, 2052, 2064, 2068),
+                    thirdMicroSectors = persistentListOf(0, 2048, 2049, 2050, 2051, 2052, 2064, 2068)
                 )
             )
         )

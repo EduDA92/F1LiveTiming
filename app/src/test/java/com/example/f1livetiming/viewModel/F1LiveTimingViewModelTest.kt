@@ -11,6 +11,9 @@ import com.example.f1livetiming.ui.model.DriverPosition
 import com.example.f1livetiming.ui.model.Lap
 import com.example.f1livetiming.ui.model.Stint
 import com.example.f1livetiming.utils.MainDispatcherRule
+import com.example.f1livetiming.utils.fullDataExpectedResponse
+import com.example.f1livetiming.utils.incompleteDataExpectedResponse
+import com.example.f1livetiming.utils.nullDataExpectedResponse
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
@@ -56,7 +59,10 @@ class F1LiveTimingViewModelTest {
         }
 
         assertEquals(LiveTimingUIState.Loading, viewModel.liveTimingUIState.value)
-        assertEquals(LiveTimingData(driverDataList = persistentListOf()), viewModel.liveTimingData.value)
+        assertEquals(
+            LiveTimingData(driverDataList = persistentListOf()),
+            viewModel.liveTimingData.value
+        )
 
         collectJob.cancel()
         collectJob2.cancel()
@@ -80,7 +86,10 @@ class F1LiveTimingViewModelTest {
         }
 
         assertEquals(LiveTimingUIState.Error("Error"), viewModel.liveTimingUIState.value)
-        assertEquals(LiveTimingData(driverDataList = persistentListOf()), viewModel.liveTimingData.value)
+        assertEquals(
+            LiveTimingData(driverDataList = persistentListOf()),
+            viewModel.liveTimingData.value
+        )
 
         collectJob.cancel()
         collectJob2.cancel()
@@ -97,50 +106,19 @@ class F1LiveTimingViewModelTest {
             repository.changeResponseState(state = ResponseState.SUCCESS)
             repository.changeDriverPositionList(listOf(DriverPosition(1, 1)))
             repository.changeDriverList(listOf(Driver("VER", 1, "#FF3671C6")))
-            repository.changeLapsList(
+            repository.changeLapsList(fullLapListData)
+            repository.changeStintList(
                 listOf(
-                    Pair(
-                        first = Lap(
-                            driverNumber = 1,
-                            lapDuration = 79.774,
-                            lapNumber = 66,
-                            sector1Duration = 23.251,
-                            sector2Duration = 32.326,
-                            sector3Duration = 24.197,
-                            segmentsSector1 = listOf(
-                                2049,
-                                2049,
-                                2048,
-                                2048,
-                                2048,
-                                2048,
-                                2048
-                            ),
-                            segmentsSector2 = listOf(
-                                2048,
-                                2048,
-                                2048,
-                                2048,
-                                2048,
-                                2048,
-                                2048,
-                                2048
-                            ),
-                            segmentsSector3 = listOf(
-                                2048,
-                                2048,
-                                2048,
-                                2048,
-                                2064,
-                                2064
-                            )
-
-                        ),
-                        second = 77.776
+                    Stint(
+                        compound = "WET",
+                        driverNumber = 1,
+                        lapEnd = 24,
+                        lapStart = 1,
+                        stintNumber = 4,
+                        tyreAgeAtStart = 2
                     )
                 )
             )
-            repository.changeStintList(listOf(Stint(compound = "WET", driverNumber = 1, lapEnd = 24, lapStart = 1, stintNumber = 4, tyreAgeAtStart = 2)))
 
             val collectJob = launch(UnconfinedTestDispatcher(testScheduler)) {
                 viewModel.liveTimingUIState.collect()
@@ -154,21 +132,7 @@ class F1LiveTimingViewModelTest {
             assertEquals(LiveTimingUIState.Idle, viewModel.liveTimingUIState.value)
 
             assertEquals(
-                LiveTimingData(
-                    driverDataList = persistentListOf(
-                        DriverData(
-                            driverNumber = 1,
-                            driverPosition = 1,
-                            driverAcronym = "VER",
-                            teamColor = "#FF3671C6",
-                            bestLap = 77.776,
-                            lastLap = 79.774,
-                            tireCompound = "WET",
-                            pitNumber = 3,
-                            stintLaps = 25
-                        )
-                    )
-                ),
+                fullDataExpectedResponse,
                 viewModel.liveTimingData.value
             )
 
@@ -186,48 +150,8 @@ class F1LiveTimingViewModelTest {
         repository.changeResponseState(state = ResponseState.SUCCESS)
         repository.changeDriverPositionList(listOf(DriverPosition(1, 1)))
         repository.changeDriverList(listOf(Driver("VER", 1, "#FF3671C6")))
-        repository.changeLapsList(
-            listOf(Pair(
-                first = Lap(
-                    driverNumber = 256,
-                    lapDuration = 79.774,
-                    lapNumber = 66,
-                    sector1Duration = 23.251,
-                    sector2Duration = 32.326,
-                    sector3Duration = 24.197,
-                    segmentsSector1 = listOf(
-                        2049,
-                        2049,
-                        2048,
-                        2048,
-                        2048,
-                        2048,
-                        2048
-                    ),
-                    segmentsSector2 = listOf(
-                        2048,
-                        2048,
-                        2048,
-                        2048,
-                        2048,
-                        2048,
-                        2048,
-                        2048
-                    ),
-                    segmentsSector3 = listOf(
-                        2048,
-                        2048,
-                        2048,
-                        2048,
-                        2064,
-                        2064
-                    )
-
-                ),
-                second = 77.776
-            )) )
-
-        repository.changeStintList(listOf(Stint(compound = "WET", driverNumber = 33, lapEnd = 24, lapStart = 1, stintNumber = 4, tyreAgeAtStart = 2)))
+        repository.changeLapsList(emptyList())
+        repository.changeStintList(emptyList())
 
         val collectJob = launch(UnconfinedTestDispatcher(testScheduler)) {
             viewModel.liveTimingUIState.collect()
@@ -240,21 +164,7 @@ class F1LiveTimingViewModelTest {
         assertEquals(LiveTimingUIState.Idle, viewModel.liveTimingUIState.value)
 
         assertEquals(
-            LiveTimingData(
-                driverDataList = persistentListOf(
-                    DriverData(
-                        driverNumber = 1,
-                        driverPosition = 1,
-                        driverAcronym = "VER",
-                        teamColor = "#FF3671C6",
-                        bestLap = 0.0,
-                        lastLap = 0.0,
-                        tireCompound = "UNK",
-                        pitNumber = 0,
-                        stintLaps = 0
-                    )
-                )
-            ),
+            incompleteDataExpectedResponse,
             viewModel.liveTimingData.value
         )
 
@@ -266,59 +176,29 @@ class F1LiveTimingViewModelTest {
     /** When the data lap data from the API contains null lap duration the default values for the UI
      * will be 0.0 for best & last lap Also when it sends Null data for Stint compound and tyre age
      * default values will be "UNK" and 0 respectively */
-    
+
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun f1LiveTimingViewModel_whenApiSendNullData_lapDataIsDefaultData() = runTest {
+    fun f1LiveTimingViewModel_whenApiSendNullData_dataIsDefaultData() = runTest {
 
         /** Setup the state of the repo first */
         repository.changeResponseState(state = ResponseState.SUCCESS)
         repository.changeDriverPositionList(listOf(DriverPosition(1, 1)))
         repository.changeDriverList(listOf(Driver("VER", 1, "#FF3671C6")))
-        repository.changeLapsList(
+        repository.changeLapsList(nullLapListData)
+
+        repository.changeStintList(
             listOf(
-                Pair(
-                    first = Lap(
-                        driverNumber = 1,
-                        lapDuration = null,
-                        lapNumber = 1,
-                        sector1Duration = null,
-                        sector2Duration = 32.054,
-                        sector3Duration = 23.658,
-                        segmentsSector1 = listOf(
-                            2048,
-                            2049,
-                            2049,
-                            2049,
-                            2049,
-                            2049,
-                            2049
-                        ),
-                        segmentsSector2 = listOf(
-                            2049,
-                            2049,
-                            2049,
-                            2049,
-                            2049,
-                            2049,
-                            2051,
-                            2049
-                        ),
-                        segmentsSector3 = listOf(
-                            2048,
-                            2048,
-                            2049,
-                            2051,
-                            2048,
-                            2048
-                        )
-
-                    ),
-                    second = 0.0
+                Stint(
+                    compound = null,
+                    driverNumber = 1,
+                    lapEnd = 24,
+                    lapStart = 1,
+                    stintNumber = 4,
+                    tyreAgeAtStart = null
                 )
-            ))
-
-        repository.changeStintList(listOf(Stint(compound = null, driverNumber = 1, lapEnd = 24, lapStart = 1, stintNumber = 4, tyreAgeAtStart = null)))
+            )
+        )
 
         val collectJob = launch(UnconfinedTestDispatcher(testScheduler)) {
             viewModel.liveTimingUIState.collect()
@@ -331,25 +211,168 @@ class F1LiveTimingViewModelTest {
         assertEquals(LiveTimingUIState.Idle, viewModel.liveTimingUIState.value)
 
         assertEquals(
-            LiveTimingData(
-                driverDataList = persistentListOf(
-                    DriverData(
-                        driverNumber = 1,
-                        driverPosition = 1,
-                        driverAcronym = "VER",
-                        teamColor = "#FF3671C6",
-                        bestLap = 0.0,
-                        lastLap = 0.0,
-                        tireCompound = "UNK",
-                        pitNumber = 3,
-                        stintLaps = 23
-                    )
-                )
-            ),
+            nullDataExpectedResponse,
             viewModel.liveTimingData.value
         )
 
         collectJob.cancel()
         collectJob2.cancel()
     }
+
+    private val fullLapListData = listOf(
+        Triple(
+            first = Lap(
+                driverNumber = 1,
+                lapDuration = 79.774,
+                lapNumber = 1,
+                sector1Duration = 24.062,
+                sector2Duration = 32.054,
+                sector3Duration = 23.658,
+                segmentsSector1 = listOf(
+                    2048,
+                    2049,
+                    2049,
+                    2049,
+                    2049,
+                    2049,
+                    2049
+                ),
+                segmentsSector2 = listOf(
+                    2049,
+                    2049,
+                    2049,
+                    2049,
+                    2049,
+                    2049,
+                    2051,
+                    2049
+                ),
+                segmentsSector3 = listOf(
+                    2048,
+                    2048,
+                    2049,
+                    2051,
+                    2048,
+                    2048
+                )
+
+            ),
+            second = Lap(
+                driverNumber = 1,
+                lapDuration = 79.774,
+                lapNumber = 1,
+                sector1Duration = 24.062,
+                sector2Duration = 32.054,
+                sector3Duration = 23.658,
+                segmentsSector1 = listOf(
+                    2048,
+                    2049,
+                    2049,
+                    2049,
+                    2049,
+                    2049,
+                    2049
+                ),
+                segmentsSector2 = listOf(
+                    2049,
+                    2049,
+                    2049,
+                    2049,
+                    2049,
+                    2049,
+                    2051,
+                    2049
+                ),
+                segmentsSector3 = listOf(
+                    2048,
+                    2048,
+                    2049,
+                    2051,
+                    2048,
+                    2048
+                )
+
+            ),
+            third = 77.776
+        )
+    )
+
+    private val nullLapListData = listOf(
+        Triple(
+            first = Lap(
+                driverNumber = 1,
+                lapDuration = null,
+                lapNumber = 1,
+                sector1Duration = null,
+                sector2Duration = 32.054,
+                sector3Duration = 23.658,
+                segmentsSector1 = listOf(
+                    2048,
+                    2049,
+                    2049,
+                    2049,
+                    2049,
+                    2049,
+                    2049
+                ),
+                segmentsSector2 = listOf(
+                    2049,
+                    2049,
+                    2049,
+                    2049,
+                    2049,
+                    2049,
+                    2051,
+                    2049
+                ),
+                segmentsSector3 = listOf(
+                    2048,
+                    2048,
+                    2049,
+                    2051,
+                    2048,
+                    2048
+                )
+
+            ),
+            second = Lap(
+                driverNumber = 1,
+                lapDuration = null,
+                lapNumber = 1,
+                sector1Duration = null,
+                sector2Duration = 32.054,
+                sector3Duration = 23.658,
+                segmentsSector1 = listOf(
+                    2048,
+                    2049,
+                    2049,
+                    2049,
+                    2049,
+                    2049,
+                    2049
+                ),
+                segmentsSector2 = listOf(
+                    2049,
+                    2049,
+                    2049,
+                    2049,
+                    2049,
+                    2049,
+                    2051,
+                    2049
+                ),
+                segmentsSector3 = listOf(
+                    2048,
+                    2048,
+                    2049,
+                    2051,
+                    2048,
+                    2048
+                )
+
+            ),
+            third = 0.0
+        )
+    )
+
 }

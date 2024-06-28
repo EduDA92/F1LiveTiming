@@ -1,9 +1,12 @@
 package com.example.f1livetiming.utils
 
+import com.example.f1livetiming.ui.liveTimingScreen.DriverData
+import com.example.f1livetiming.ui.liveTimingScreen.LiveTimingData
 import com.example.f1livetiming.ui.model.Driver
 import com.example.f1livetiming.ui.model.DriverPosition
 import com.example.f1livetiming.ui.model.Lap
 import com.example.f1livetiming.ui.model.Stint
+import kotlinx.collections.immutable.persistentListOf
 
 val expectedFullDriverPositionResponse = listOf(
     DriverPosition(
@@ -102,7 +105,7 @@ val expectedDriverResponse = listOf(
 )
 
 val expectedLapsResponse = listOf(
-    Pair(
+    Triple(
         first = Lap(
             driverNumber = 1,
             lapDuration = 79.774,
@@ -139,9 +142,45 @@ val expectedLapsResponse = listOf(
             )
 
         ),
-        second = 77.776
+        second = Lap(
+            driverNumber = 1,
+            lapDuration = 79.774,
+            lapNumber = 66,
+            sector1Duration = 23.251,
+            sector2Duration = 32.326,
+            sector3Duration = 24.197,
+            segmentsSector1 = listOf(
+                2049,
+                2049,
+                2048,
+                2048,
+                2048,
+                2048,
+                2048
+            ),
+            segmentsSector2 = listOf(
+                2048,
+                2048,
+                2048,
+                2048,
+                2048,
+                2048,
+                2048,
+                2048
+            ),
+            segmentsSector3 = listOf(
+                2048,
+                2048,
+                2048,
+                2048,
+                2064,
+                2064
+            )
+
+        ),
+        third = 77.776
     ),
-    Pair(
+    Triple(
         first = Lap(
             driverNumber = 2,
             lapDuration = 85.203,
@@ -178,9 +217,45 @@ val expectedLapsResponse = listOf(
             )
 
         ),
-        second = 80.172,
+        second = Lap(
+            driverNumber = 2,
+            lapDuration = 85.203,
+            lapNumber = 64,
+            sector1Duration = 25.139,
+            sector2Duration = 34.847,
+            sector3Duration = 25.217,
+            segmentsSector1 = listOf(
+                null,
+                2048,
+                2048,
+                2048,
+                2048,
+                2048,
+                2048
+            ),
+            segmentsSector2 = listOf(
+                2048,
+                2048,
+                2048,
+                2048,
+                2048,
+                2048,
+                2048,
+                2048
+            ),
+            segmentsSector3 = listOf(
+                2048,
+                2048,
+                2048,
+                2048,
+                2064,
+                2064
+            )
+
+        ),
+        third = 80.172,
     ),
-    Pair(
+    Triple(
         first = Lap(
             driverNumber = 3,
             lapDuration = 79.527,
@@ -217,13 +292,85 @@ val expectedLapsResponse = listOf(
             )
 
         ),
-        second = 79.450,
+        second = Lap(
+            driverNumber = 3,
+            lapDuration = 79.527,
+            lapNumber = 65,
+            sector1Duration = 23.52,
+            sector2Duration = 32.152,
+            sector3Duration = 23.855,
+            segmentsSector1 = listOf(
+                null,
+                2048,
+                2048,
+                2048,
+                2048,
+                2048,
+                2048
+            ),
+            segmentsSector2 = listOf(
+                2048,
+                2048,
+                2048,
+                2048,
+                2048,
+                2048,
+                2048,
+                2048
+            ),
+            segmentsSector3 = listOf(
+                2048,
+                2048,
+                2048,
+                2048,
+                2064,
+                2064
+            )
+
+        ),
+        third = 79.450,
     )
 )
 
 val expectedNullLapDurationResponse = listOf(
-    Pair(
+    Triple(
         first = Lap(
+            driverNumber = 1,
+            lapDuration = null,
+            lapNumber = 1,
+            sector1Duration = null,
+            sector2Duration = null,
+            sector3Duration = null,
+            segmentsSector1 = listOf(
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+            ),
+            segmentsSector2 = listOf(
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+            ),
+            segmentsSector3 = listOf(
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+            )
+
+        ),
+        second = Lap(
             driverNumber = 1,
             lapDuration = null,
             lapNumber = 1,
@@ -259,7 +406,7 @@ val expectedNullLapDurationResponse = listOf(
             )
 
         ),
-        second = 0.0
+        third = 0.0
     )
 )
 
@@ -287,5 +434,109 @@ val expectedStintsResponse = listOf(
         lapStart = 43,
         compound = "HARD",
         tyreAgeAtStart = 0
+    ))
+
+    val fullDataExpectedResponse =  LiveTimingData(
+        driverDataList = persistentListOf(
+            DriverData(
+                driverNumber = 1,
+                driverPosition = 1,
+                driverAcronym = "VER",
+                teamColor = "#FF3671C6",
+                bestLap = 77.776,
+                lastLap = 79.774,
+                tireCompound = "WET",
+                pitNumber = 3,
+                stintLaps = 25,
+                firstMicroSectors = persistentListOf(
+                    2048,
+                    2049,
+                    2049,
+                    2049,
+                    2049,
+                    2049,
+                    2049
+                ),
+                secondMicroSectors = persistentListOf(
+                    2049,
+                    2049,
+                    2049,
+                    2049,
+                    2049,
+                    2049,
+                    2051,
+                    2049
+                ),
+                thirdMicroSectors = persistentListOf(
+                    2048,
+                    2048,
+                    2049,
+                    2051,
+                    2048,
+                    2048
+                )
+            )
+        )
+        )
+
+val incompleteDataExpectedResponse = LiveTimingData(
+    driverDataList = persistentListOf(
+        DriverData(
+            driverNumber = 1,
+            driverPosition = 1,
+            driverAcronym = "VER",
+            teamColor = "#FF3671C6",
+            bestLap = 0.0,
+            lastLap = 0.0,
+            tireCompound = "UNK",
+            pitNumber = 0,
+            stintLaps = 0,
+            firstMicroSectors = persistentListOf(),
+            secondMicroSectors = persistentListOf(),
+            thirdMicroSectors = persistentListOf()
+        )
+    )
+)
+
+val nullDataExpectedResponse = LiveTimingData(
+    driverDataList = persistentListOf(
+        DriverData(
+            driverNumber = 1,
+            driverPosition = 1,
+            driverAcronym = "VER",
+            teamColor = "#FF3671C6",
+            bestLap = 0.0,
+            lastLap = 0.0,
+            tireCompound = "UNK",
+            pitNumber = 3,
+            stintLaps = 23,
+            firstMicroSectors = persistentListOf(
+                2048,
+                2049,
+                2049,
+                2049,
+                2049,
+                2049,
+                2049
+            ),
+            secondMicroSectors = persistentListOf(
+                2049,
+                2049,
+                2049,
+                2049,
+                2049,
+                2049,
+                2051,
+                2049
+            ),
+            thirdMicroSectors = persistentListOf(
+                2048,
+                2048,
+                2049,
+                2051,
+                2048,
+                2048
+            )
+        )
     )
 )

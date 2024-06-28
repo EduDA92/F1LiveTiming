@@ -18,7 +18,7 @@ class TestF1LiveTimingRepositoryImpl : F1LiveTimingRepository  {
 
     private var driverPositionsList = emptyList<DriverPosition>()
     private var driverList = emptyList<Driver>()
-    private var lapList = emptyList<Pair<Lap, Double>>()
+    private var lapList = emptyList<Triple<Lap, Lap, Double>>()
     private var stintList = emptyList<Stint>()
     private var responseState = ResponseState.WAITING
 
@@ -64,7 +64,7 @@ class TestF1LiveTimingRepositoryImpl : F1LiveTimingRepository  {
     override fun getLaps(
         onIdle: () -> Unit,
         onError: (String) -> Unit
-    ): Flow<List<Pair<Lap, Double>>> = flow {
+    ): Flow<List<Triple<Lap, Lap, Double>>> = flow {
         when(responseState){
             ResponseState.WAITING -> {
                 // no-op
@@ -102,7 +102,7 @@ class TestF1LiveTimingRepositoryImpl : F1LiveTimingRepository  {
         driverList = list
     }
 
-    fun changeLapsList(list: List<Pair<Lap, Double>>){
+    fun changeLapsList(list: List<Triple<Lap, Lap, Double>>){
         lapList = list
     }
 

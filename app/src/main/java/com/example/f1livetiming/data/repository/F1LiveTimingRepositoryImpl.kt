@@ -1,9 +1,11 @@
 package com.example.f1livetiming.data.repository
 
+import android.util.Log
 import com.example.f1livetiming.data.dispatchers.Dispatcher
 import com.example.f1livetiming.data.dispatchers.F1LiveTimingDispatchers
 import com.example.f1livetiming.data.mapper.asDomain
 import com.example.f1livetiming.data.network.F1Client
+import com.example.f1livetiming.data.network.model.LapDTO
 import com.example.f1livetiming.ui.model.Driver
 import com.example.f1livetiming.ui.model.DriverPosition
 import com.example.f1livetiming.ui.model.Lap
@@ -71,6 +73,7 @@ class F1LiveTimingRepositoryImpl @Inject constructor(
 
                     }
 
+                    Log.d(TAG, "getDriversPositions")
                     emit(driverPositionList.sortedBy { it.driverPosition })
                     onIdle()
 
@@ -83,7 +86,7 @@ class F1LiveTimingRepositoryImpl @Inject constructor(
                 onError(e.message.toString())
             }
 
-            delay(4000)
+            delay(3000)
 
         }
 
@@ -101,6 +104,7 @@ class F1LiveTimingRepositoryImpl @Inject constructor(
         val driverResponse = f1Client.getDrivers("latest")
 
         if (driverResponse.isSuccessful) {
+            Log.d(TAG, "getDrivers")
             emit(driverResponse.body()!!.asDomain())
             onIdle()
         } else {
@@ -117,33 +121,50 @@ class F1LiveTimingRepositoryImpl @Inject constructor(
         }
     }.flowOn(ioDispatcher)
 
-    /** Get the lap list from the API, this will return a list that contains a Pair of [Lap] and [Double]
-     * the pair will be Pair<LastLap, BestLapDuration>*/
+    /** Get the lap list from the API, this will return a list that contains a Triple of [Lap] and [Double]
+     * the triple will be Triple<LastLap, CurrentLap, BestLapDuration>
+     * the LastLap will be the latest lap in the  list with lapDuration != null
+     * the currentLap will be the latest lap in the list no matter if lapDuration == null
+     * and best lap will be the lap with least time*/
 
-    override fun getLaps(onIdle: () -> Unit, onError: (String) -> Unit): Flow<List<Pair<Lap, Double>>> =
-        flow<List<Pair<Lap, Double>>> {
+    override fun getLaps(onIdle: () -> Unit, onError: (String) -> Unit): Flow<List<Triple<Lap, Lap, Double>>> =
+        flow<List<Triple<Lap, Lap, Double>>> {
 
             while (true) {
 
                 try {
+
                     val lapsResponse = f1Client.getLaps("latest")
 
                     if(lapsResponse.isSuccessful){
 
                         val driverLapsResponse = lapsResponse.body()!!.groupBy { it.driverNumber }
-                        val driverLapsList = mutableListOf<Pair<Lap, Double>>()
+                        val driverLapsList = mutableListOf<Triple<Lap, Lap, Double>>()
 
-                        driverLapsResponse.forEach { (_, lapsList) ->
+                        driverLapsResponse.forEach { (driverNumber, lapsList) ->
 
                             driverLapsList.add(
-                                Pair(
-                                    first = lapsList.maxByOrNull { it.lapNumber }!!.asDomain(),
-                                    second = lapsList.filter { it.lapDuration != null }.minOfOrNull { it.lapDuration!! } ?: 0.0,
+                                Triple(
+                                    first = lapsList.filter{it.lapDuration != null}.maxByOrNull { it.lapNumber }?.asDomain() ?:
+                                    Lap(
+                                        driverNumber = driverNumber,
+                                        lapDuration = null,
+                                        lapNumber = 1,
+                                        sector1Duration = null,
+                                        sector2Duration = null,
+                                        sector3Duration = null,
+                                        segmentsSector1 = listOf(0, 0, 0, 0, 0, 0, 0),
+                                        segmentsSector2 = listOf(0, 0, 0, 0, 0, 0, 0, 0),
+                                        segmentsSector3 = listOf(0, 0, 0, 0, 0, 0)
+                                    ),
+                                    second = lapsList.maxByOrNull { it.lapNumber }!!.asDomain(),
+                                    third = lapsList.filter { it.lapDuration != null }.minOfOrNull { it.lapDuration!! } ?: 0.0,
                                 )
                             )
 
                         }
 
+                        Log.d(TAG, "getDriversLapList")
                         emit(driverLapsList)
                         onIdle()
 
@@ -155,7 +176,7 @@ class F1LiveTimingRepositoryImpl @Inject constructor(
                     onError(e.message.toString())
                 }
 
-                delay(5000)
+                delay(5500)
 
             }
 
@@ -182,6 +203,7 @@ class F1LiveTimingRepositoryImpl @Inject constructor(
 
                     }
 
+                    Log.d(TAG, "getStints")
                     emit(driverStintsList)
                     onIdle()
 
