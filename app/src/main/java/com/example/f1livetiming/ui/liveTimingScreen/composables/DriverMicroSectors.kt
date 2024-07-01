@@ -47,11 +47,11 @@ fun DriverMicroSectors(
 
             }
 
-            Text(firstMicroSectorTime.toString(), fontSize = 18.sp)
+            Text(String.format("%.3f", firstMicroSectorTime), fontSize = 18.sp)
 
         }
 
-        Spacer(modifier.size(10.dp))
+        Spacer(modifier.size(20.dp))
 
         /**  Second Sector */
         Column(modifier = Modifier.weight(1f)){
@@ -66,11 +66,11 @@ fun DriverMicroSectors(
 
             }
 
-            Text(secondMicroSectorTime.toString(), fontSize = 18.sp)
+            Text(String.format("%.3f", secondMicroSectorTime), fontSize = 18.sp)
 
         }
 
-        Spacer(modifier.size(10.dp))
+        Spacer(modifier.size(20.dp))
 
         /**  Third Sector */
         Column(modifier = Modifier.weight(1f)){
@@ -85,7 +85,7 @@ fun DriverMicroSectors(
 
             }
 
-            Text(thirdMicroSectorTime.toString(),fontSize = 18.sp)
+            Text(String.format("%.3f", thirdMicroSectorTime),fontSize = 18.sp)
 
         }
     }
@@ -108,7 +108,7 @@ fun Color.Companion.fromMicroSector(microSector: Int): Color {
 fun PreviewDriverMicroSectors(){
 
     DriverMicroSectors(
-        firstMicroSectorTime = 61.549,
+        firstMicroSectorTime = 61.500,
         firstMicroSectors = persistentListOf(0, 2048, 2049, 2050, 2051, 2052, 2064, 2068),
         secondMicroSectorTime = 46.882,
         secondMicroSectors = persistentListOf(0, 2048, 2049, 2050, 2051, 2052, 2064, 2068),
