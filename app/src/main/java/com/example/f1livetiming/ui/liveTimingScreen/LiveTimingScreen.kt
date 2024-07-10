@@ -67,72 +67,64 @@ fun LiveTimingScreen(
             .padding(4.dp)
     ) {
 
-        when (state) {
-            is LiveTimingUIState.Error -> {
-                Text(state.message, modifier = Modifier.align(Alignment.Center))
-            }
+        LazyColumn(
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
 
-            LiveTimingUIState.Idle -> {
-                LazyColumn(
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
+            items(items = liveTimingData.driverDataList, key = { it.driverNumber }) {
 
-                    items(items = liveTimingData.driverDataList, key = { it.driverNumber }) {
+                var expanded by rememberSaveable { mutableStateOf(false) }
 
-                        var expanded by rememberSaveable { mutableStateOf(false) }
+                Box(modifier = Modifier
+                    .animateContentSize()
+                    .clickable { expanded = !expanded }) {
+                    Column(verticalArrangement = Arrangement.spacedBy(5.dp)) {
 
-                        Box(modifier = Modifier
-                            .animateContentSize()
-                            .clickable { expanded = !expanded }) {
-                            Column(verticalArrangement = Arrangement.spacedBy(5.dp)) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .animateItemPlacement(tween(250)),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
 
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .animateItemPlacement(tween(250)),
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
+                            DriverTag(
+                                driverPosition = it.driverPosition,
+                                driverName = it.driverAcronym,
+                                color = Color(it.teamColor.toColorInt())
+                            )
 
-                                    DriverTag(
-                                        driverPosition = it.driverPosition,
-                                        driverName = it.driverAcronym,
-                                        color = Color(it.teamColor.toColorInt())
-                                    )
+                            Spacer(modifier = Modifier.size(10.dp))
 
-                                    Spacer(modifier = Modifier.size(10.dp))
+                            DriverStint(
+                                tireCompound = it.tireCompound,
+                                stintLaps = it.stintLaps,
+                                pitNumber = it.pitNumber
+                            )
 
-                                    DriverStint(
-                                        tireCompound = it.tireCompound,
-                                        stintLaps = it.stintLaps,
-                                        pitNumber = it.pitNumber
-                                    )
+                            Spacer(modifier = Modifier.size(10.dp))
 
-                                    Spacer(modifier = Modifier.size(10.dp))
+                            DriverLaps(lastLap = it.lastLap, bestLap = it.bestLap)
 
-                                    DriverLaps(lastLap = it.lastLap, bestLap = it.bestLap)
-
-                                }
-
-                                if (expanded) {
-                                    DriverMicroSectors(
-                                        firstMicroSectorTime = it.firstSectorDuration,
-                                        firstMicroSectors = it.firstMicroSectors,
-                                        secondMicroSectorTime = it.secondSectorDuration,
-                                        secondMicroSectors = it.secondMicroSectors,
-                                        thirdMicroSectorTime = it.thirdSectorDuration,
-                                        thirdMicroSectors = it.thirdMicroSectors
-                                    )
-                                }
-                            }
                         }
 
+                        if (expanded) {
+                            DriverMicroSectors(
+                                firstMicroSectorTime = it.firstSectorDuration,
+                                firstMicroSectors = it.firstMicroSectors,
+                                secondMicroSectorTime = it.secondSectorDuration,
+                                secondMicroSectors = it.secondMicroSectors,
+                                thirdMicroSectorTime = it.thirdSectorDuration,
+                                thirdMicroSectors = it.thirdMicroSectors
+                            )
+                        }
                     }
                 }
-            }
 
-            LiveTimingUIState.Loading -> {
-                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
             }
+        }
+
+        if(state is LiveTimingUIState.Loading || liveTimingData.driverDataList.isEmpty()){
+            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
         }
     }
 
