@@ -35,9 +35,9 @@ fun DriverMicroSectors(
     Row(modifier = modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically){
 
         /**  First Sector */
-        Column(modifier = Modifier.weight(1f)){
+        Column{
 
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween){
+            Row(horizontalArrangement = Arrangement.spacedBy(1.dp)){
 
                 firstMicroSectors.forEach {
                     Canvas(modifier = Modifier.size(12.dp)) {
@@ -51,12 +51,12 @@ fun DriverMicroSectors(
 
         }
 
-        Spacer(modifier.size(20.dp))
+        Spacer(modifier.size(15.dp))
 
         /**  Second Sector */
-        Column(modifier = Modifier.weight(1f)){
+        Column{
 
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween){
+            Row(horizontalArrangement = Arrangement.spacedBy(1.dp)){
 
                 secondMicroSectors.forEach {
                     Canvas(modifier = Modifier.size(12.dp)) {
@@ -70,12 +70,12 @@ fun DriverMicroSectors(
 
         }
 
-        Spacer(modifier.size(20.dp))
+        Spacer(modifier.size(15.dp))
 
         /**  Third Sector */
-        Column(modifier = Modifier.weight(1f)){
+        Column{
 
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween){
+            Row(horizontalArrangement = Arrangement.spacedBy(1.dp)){
 
                 thirdMicroSectors.forEach {
                     Canvas(modifier = Modifier.size(12.dp)) {
