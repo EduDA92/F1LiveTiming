@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -34,6 +33,7 @@ import com.example.f1livetiming.ui.liveTimingScreen.composables.DriverLaps
 import com.example.f1livetiming.ui.liveTimingScreen.composables.DriverMicroSectors
 import com.example.f1livetiming.ui.liveTimingScreen.composables.DriverStint
 import com.example.f1livetiming.ui.liveTimingScreen.composables.DriverTag
+import com.example.f1livetiming.ui.liveTimingScreen.composables.LiveTimingHeader
 import kotlinx.collections.immutable.persistentListOf
 
 
@@ -61,72 +61,82 @@ fun LiveTimingScreen(
     state: LiveTimingUIState,
     liveTimingData: LiveTimingData
 ) {
-    Box(
+    Column(
         modifier = modifier
             .fillMaxSize()
             .padding(4.dp)
     ) {
+        LiveTimingHeader(
+            countryCode = liveTimingData.countryCode,
+            sessionName = liveTimingData.sessionName,
+            circuitName =liveTimingData.circuitName,
+            liveTimingUIState = state
+        )
+        Box {
 
-        LazyColumn(
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
 
-            items(items = liveTimingData.driverDataList, key = { it.driverNumber }) {
+                items(items = liveTimingData.driverDataList, key = { it.driverNumber }) {
 
-                var expanded by rememberSaveable { mutableStateOf(false) }
+                    var expanded by rememberSaveable { mutableStateOf(false) }
 
-                Box(modifier = Modifier
-                    .animateContentSize()
-                    .clickable { expanded = !expanded }) {
-                    Column(verticalArrangement = Arrangement.spacedBy(5.dp)) {
+                    Box(modifier = Modifier
+                        .animateContentSize()
+                        .clickable { expanded = !expanded }) {
+                        Column(verticalArrangement = Arrangement.spacedBy(5.dp)) {
 
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .animateItemPlacement(tween(250)),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .animateItemPlacement(tween(250)),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
 
-                            DriverTag(
-                                driverPosition = it.driverPosition,
-                                driverName = it.driverAcronym,
-                                color = Color(it.teamColor.toColorInt())
-                            )
+                                DriverTag(
+                                    driverPosition = it.driverPosition,
+                                    driverName = it.driverAcronym,
+                                    color = Color(it.teamColor.toColorInt())
+                                )
 
-                            Spacer(modifier = Modifier.size(10.dp))
+                                Spacer(modifier = Modifier.size(10.dp))
 
-                            DriverStint(
-                                tireCompound = it.tireCompound,
-                                stintLaps = it.stintLaps,
-                                pitNumber = it.pitNumber
-                            )
+                                DriverStint(
+                                    tireCompound = it.tireCompound,
+                                    stintLaps = it.stintLaps,
+                                    pitNumber = it.pitNumber
+                                )
 
-                            Spacer(modifier = Modifier.size(10.dp))
+                                Spacer(modifier = Modifier.size(10.dp))
 
-                            DriverLaps(lastLap = it.lastLap, bestLap = it.bestLap)
+                                DriverLaps(lastLap = it.lastLap, bestLap = it.bestLap)
 
-                        }
+                            }
 
-                        if (expanded) {
-                            DriverMicroSectors(
-                                firstMicroSectorTime = it.firstSectorDuration,
-                                firstMicroSectors = it.firstMicroSectors,
-                                secondMicroSectorTime = it.secondSectorDuration,
-                                secondMicroSectors = it.secondMicroSectors,
-                                thirdMicroSectorTime = it.thirdSectorDuration,
-                                thirdMicroSectors = it.thirdMicroSectors
-                            )
+                            if (expanded) {
+                                DriverMicroSectors(
+                                    firstMicroSectorTime = it.firstSectorDuration,
+                                    firstMicroSectors = it.firstMicroSectors,
+                                    secondMicroSectorTime = it.secondSectorDuration,
+                                    secondMicroSectors = it.secondMicroSectors,
+                                    thirdMicroSectorTime = it.thirdSectorDuration,
+                                    thirdMicroSectors = it.thirdMicroSectors
+                                )
+                            }
                         }
                     }
-                }
 
+                }
+            }
+
+            if (state is LiveTimingUIState.Loading || liveTimingData.driverDataList.isEmpty()) {
+                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
             }
         }
-
-        if(state is LiveTimingUIState.Loading || liveTimingData.driverDataList.isEmpty()){
-            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-        }
     }
+
 
 }
 
@@ -137,6 +147,9 @@ fun PreviewFullListLiveTimingScreen() {
     LiveTimingScreen(
         state = LiveTimingUIState.Idle,
         liveTimingData = LiveTimingData(
+            sessionName = "Race",
+            countryCode = "GBR",
+            circuitName = "Silverstone",
             persistentListOf(
                 DriverData(
                     driverNumber = 1,
@@ -283,7 +296,7 @@ fun PreviewLiveTimingScreen() {
 
     LiveTimingScreen(
         state = LiveTimingUIState.Loading,
-        liveTimingData = LiveTimingData(persistentListOf())
+        liveTimingData = LiveTimingData("", "", "", persistentListOf())
     )
 
 }

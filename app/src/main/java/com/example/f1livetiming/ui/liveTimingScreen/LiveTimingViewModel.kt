@@ -1,10 +1,9 @@
 package com.example.f1livetiming.ui.liveTimingScreen
 
-import androidx.compose.runtime.Stable
+
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.f1livetiming.data.repository.F1LiveTimingRepository
-import com.example.f1livetiming.ui.model.Lap
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
@@ -67,7 +66,17 @@ class LiveTimingViewModel @Inject constructor(
                         )
                     }
                 }
-            )) { positions, drivers, laps, stints ->
+            ),
+            liveTimingRepository.getSession(
+                onIdle = { _liveTimingUIState.update { LiveTimingUIState.Idle } },
+                onError = { errorMessage ->
+                    _liveTimingUIState.update {
+                        LiveTimingUIState.Error(
+                            errorMessage
+                        )
+                    }
+                }
+            )) { positions, drivers, laps, stints, session ->
 
 
             val driverDataList = positions.map {
@@ -101,6 +110,9 @@ class LiveTimingViewModel @Inject constructor(
             }
 
             LiveTimingData(
+                sessionName = session.getOrNull(0)?.sessionName ?: "",
+                countryCode = session.getOrNull(0)?.countryCode ?: "UNK",
+                circuitName = session.getOrNull(0)?.circuitName ?: "",
                 driverDataList = driverDataList.toImmutableList()
             )
 
@@ -108,6 +120,9 @@ class LiveTimingViewModel @Inject constructor(
             viewModelScope,
             SharingStarted.WhileSubscribed(),
             LiveTimingData(
+                sessionName = "Loading",
+                countryCode = "UNK",
+                circuitName = "LiveTiming",
                 driverDataList = persistentListOf()
             )
         )
@@ -121,6 +136,9 @@ sealed interface LiveTimingUIState {
 }
 
 data class LiveTimingData(
+    val sessionName: String,
+    val countryCode: String,
+    val circuitName: String,
     val driverDataList: ImmutableList<DriverData>
 )
 

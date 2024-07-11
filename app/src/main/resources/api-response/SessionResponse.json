@@ -1,0 +1,18 @@
+[
+  {
+    "session_key": 9558,
+    "session_name": "Race",
+    "date_start": "2024-07-07T14:00:00+00:00",
+    "date_end": "2024-07-07T16:00:00+00:00",
+    "gmt_offset": "01:00:00",
+    "session_type": "Race",
+    "meeting_key": 1240,
+    "location": "Silverstone",
+    "country_key": 2,
+    "country_code": "GBR",
+    "country_name": "Great Britain",
+    "circuit_key": 2,
+    "circuit_short_name": "Silverstone",
+    "year": 2024
+  }
+]

@@ -1,14 +1,13 @@
 package com.example.f1livetiming.data.repository
 
-import android.util.Log
 import com.example.f1livetiming.data.dispatchers.Dispatcher
 import com.example.f1livetiming.data.dispatchers.F1LiveTimingDispatchers
 import com.example.f1livetiming.data.mapper.asDomain
 import com.example.f1livetiming.data.network.F1Client
-import com.example.f1livetiming.data.network.model.LapDTO
 import com.example.f1livetiming.ui.model.Driver
 import com.example.f1livetiming.ui.model.DriverPosition
 import com.example.f1livetiming.ui.model.Lap
+import com.example.f1livetiming.ui.model.Session
 import com.example.f1livetiming.ui.model.Stint
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.delay
@@ -109,7 +108,7 @@ class F1LiveTimingRepositoryImpl @Inject constructor(
             onError(driverResponse.errorBody().toString())
         }
 
-    }.retryWhen { cause: Throwable, attempt: Long ->
+    }.retryWhen { cause: Throwable, _ ->
         if (cause is IOException) {
             onError(cause.message.toString())
             delay(5000)
@@ -125,7 +124,10 @@ class F1LiveTimingRepositoryImpl @Inject constructor(
      * the currentLap will be the latest lap in the list no matter if lapDuration == null
      * and best lap will be the lap with least time*/
 
-    override fun getLaps(onIdle: () -> Unit, onError: (String) -> Unit): Flow<List<Triple<Lap, Lap, Double>>> =
+    override fun getLaps(
+        onIdle: () -> Unit,
+        onError: (String) -> Unit
+    ): Flow<List<Triple<Lap, Lap, Double>>> =
         flow<List<Triple<Lap, Lap, Double>>> {
 
             while (true) {
@@ -134,7 +136,7 @@ class F1LiveTimingRepositoryImpl @Inject constructor(
 
                     val lapsResponse = f1Client.getLaps("latest")
 
-                    if(lapsResponse.isSuccessful){
+                    if (lapsResponse.isSuccessful) {
 
                         val driverLapsResponse = lapsResponse.body()!!.groupBy { it.driverNumber }
                         val driverLapsList = mutableListOf<Triple<Lap, Lap, Double>>()
@@ -143,8 +145,8 @@ class F1LiveTimingRepositoryImpl @Inject constructor(
 
                             driverLapsList.add(
                                 Triple(
-                                    first = lapsList.filter{it.lapDuration != null}.maxByOrNull { it.lapNumber }?.asDomain() ?:
-                                    Lap(
+                                    first = lapsList.filter { it.lapDuration != null }
+                                        .maxByOrNull { it.lapNumber }?.asDomain() ?: Lap(
                                         driverNumber = driverNumber,
                                         lapDuration = null,
                                         lapNumber = 1,
@@ -156,7 +158,8 @@ class F1LiveTimingRepositoryImpl @Inject constructor(
                                         segmentsSector3 = listOf(0, 0, 0, 0, 0, 0)
                                     ),
                                     second = lapsList.maxByOrNull { it.lapNumber }!!.asDomain(),
-                                    third = lapsList.filter { it.lapDuration != null }.minOfOrNull { it.lapDuration!! } ?: 0.0,
+                                    third = lapsList.filter { it.lapDuration != null }
+                                        .minOfOrNull { it.lapDuration!! } ?: 0.0,
                                 )
                             )
 
@@ -165,7 +168,7 @@ class F1LiveTimingRepositoryImpl @Inject constructor(
                         emit(driverLapsList)
                         onIdle()
 
-                    } else{
+                    } else {
                         onError(lapsResponse.errorBody().toString())
                     }
 
@@ -181,41 +184,69 @@ class F1LiveTimingRepositoryImpl @Inject constructor(
 
     /** Get the stint list from the API and return a list with the latest [Stint] for each driver */
 
-    override fun getStints(onIdle: () -> Unit, onError: (String) -> Unit): Flow<List<Stint>> = flow<List<Stint>> {
+    override fun getStints(onIdle: () -> Unit, onError: (String) -> Unit): Flow<List<Stint>> =
+        flow<List<Stint>> {
 
-        while (true){
+            while (true) {
 
-            try{
+                try {
 
-                val stintsResponse = f1Client.getStints("latest")
+                    val stintsResponse = f1Client.getStints("latest")
 
-                if(stintsResponse.isSuccessful){
+                    if (stintsResponse.isSuccessful) {
 
-                    val driverStints = stintsResponse.body()!!.groupBy { it.driverNumber }
-                    val driverStintsList = mutableListOf<Stint>()
+                        val driverStints = stintsResponse.body()!!.groupBy { it.driverNumber }
+                        val driverStintsList = mutableListOf<Stint>()
 
-                    driverStints.forEach { (_, stintList) ->
+                        driverStints.forEach { (_, stintList) ->
 
-                        driverStintsList.add(stintList.maxByOrNull { it.stintNumber }!!.asDomain())
+                            driverStintsList.add(
+                                stintList.maxByOrNull { it.stintNumber }!!.asDomain()
+                            )
 
+                        }
+
+                        emit(driverStintsList)
+                        onIdle()
+
+                    } else {
+                        onError(stintsResponse.errorBody().toString())
                     }
 
-                    emit(driverStintsList)
-                    onIdle()
 
-                } else {
-                    onError(stintsResponse.errorBody().toString())
+                } catch (e: Exception) {
+                    onError(e.message.toString())
                 }
 
 
-            } catch (e: Exception) {
-                onError(e.message.toString())
+                delay(9000)
             }
 
 
-            delay(9000)
-        }
+        }.flowOn(ioDispatcher)
 
+    /** Get the session list from the API and return a list with the latest [Session] */
 
-    }.flowOn(ioDispatcher)
+    override fun getSession(onIdle: () -> Unit, onError: (String) -> Unit): Flow<List<Session>> = flow {
+
+            val sessionResponse = f1Client.getSession("latest")
+
+            if (sessionResponse.isSuccessful) {
+
+                emit(sessionResponse.body()!!.asDomain())
+                onIdle()
+
+            } else {
+                onError(sessionResponse.errorBody().toString())
+            }
+
+        }.retryWhen { cause: Throwable, _ ->
+            if (cause is IOException) {
+                onError(cause.message.toString())
+                delay(5000)
+                true
+            } else {
+                false
+            }
+        }.flowOn(ioDispatcher)
 }

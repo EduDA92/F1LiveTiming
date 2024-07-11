@@ -5,6 +5,7 @@ import com.example.f1livetiming.ui.liveTimingScreen.LiveTimingData
 import com.example.f1livetiming.ui.model.Driver
 import com.example.f1livetiming.ui.model.DriverPosition
 import com.example.f1livetiming.ui.model.Lap
+import com.example.f1livetiming.ui.model.Session
 import com.example.f1livetiming.ui.model.Stint
 import kotlinx.collections.immutable.persistentListOf
 
@@ -437,6 +438,9 @@ val expectedStintsResponse = listOf(
     ))
 
     val fullDataExpectedResponse =  LiveTimingData(
+        sessionName = "Race",
+        countryCode = "GBR",
+        circuitName = "Silverstone",
         driverDataList = persistentListOf(
             DriverData(
                 driverNumber = 1,
@@ -483,6 +487,9 @@ val expectedStintsResponse = listOf(
         )
 
 val incompleteDataExpectedResponse = LiveTimingData(
+    sessionName = "",
+    countryCode = "UNK",
+    circuitName = "",
     driverDataList = persistentListOf(
         DriverData(
             driverNumber = 1,
@@ -505,6 +512,9 @@ val incompleteDataExpectedResponse = LiveTimingData(
 )
 
 val nullDataExpectedResponse = LiveTimingData(
+    sessionName = "",
+    countryCode = "UNK",
+    circuitName = "",
     driverDataList = persistentListOf(
         DriverData(
             driverNumber = 1,
@@ -547,5 +557,14 @@ val nullDataExpectedResponse = LiveTimingData(
                 2048
             )
         )
+    )
+)
+
+val sessionsExpectedResponse = listOf(
+    Session(
+        sessionName = "Race",
+        countryCode = "GBR",
+        countryName = "Great Britain",
+        circuitName = "Silverstone"
     )
 )

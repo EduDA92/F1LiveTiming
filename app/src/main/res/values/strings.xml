@@ -1,3 +1,25 @@
 <resources>
     <string name="app_name">F1LiveTiming</string>
+    <string name="brn_cd">bahrain flag image</string>
+    <string name="ksa_cd">Saudi Arabia flag image</string>
+    <string name="aus_cd">Australia flag image</string>
+    <string name="jpn_cd">Japan flag image</string>
+    <string name="chn_cd">China flag image</string>
+    <string name="usa_cd">USA flag image</string>
+    <string name="ita_cd">Italia flag image</string>
+    <string name="mon_cd">Monaco flag image</string>
+    <string name="can_cd">Canada flag image</string>
+    <string name="esp_cd">Spain flag image</string>
+    <string name="aut_cd">Austria flag image</string>
+    <string name="gbr_cd">United Kingdom flag image</string>
+    <string name="hun_cd">Hungary flag image</string>
+    <string name="bel_cd">Belgium flag image</string>
+    <string name="ned_cd">Netherlands flag image</string>
+    <string name="aze_cd">Azerbaijan flag image</string>
+    <string name="sgp_cd">Singapore flag image</string>
+    <string name="mex_cd">Mexico flag image</string>
+    <string name="bra_cd">Brazil Flag image</string>
+    <string name="qat_cd">Qatar flag image</string>
+    <string name="uae_cd">Abu dhabi flag image</string>
+    <string name="header_text">%1$s: %2$s</string>
 </resources>

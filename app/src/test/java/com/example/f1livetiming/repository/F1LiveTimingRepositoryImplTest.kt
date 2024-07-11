@@ -13,6 +13,7 @@ import com.example.f1livetiming.utils.expectedFullDriverPositionResponse
 import com.example.f1livetiming.utils.expectedLapsResponse
 import com.example.f1livetiming.utils.expectedNullLapDurationResponse
 import com.example.f1livetiming.utils.expectedStintsResponse
+import com.example.f1livetiming.utils.sessionsExpectedResponse
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.Json
@@ -176,6 +177,20 @@ class F1LiveTimingRepositoryImplTest {
         ).first().filter { it.driverNumber == 1 || it.driverNumber == 2 || it.driverNumber == 3 }.sortedBy { it.driverNumber }
 
         assertEquals(expectedStintsResponse, result)
+    }
+
+    @Test
+    fun f1LiveTimingRepositoryImpl_sessionResponse_returnsExpectedResponse() = runTest {
+
+        mockWebServer.enqueueResponse("SessionResponse.json")
+
+        val result = repository.getSession(
+           onIdle = {},
+            onError = {}
+        ).first()
+
+        assertEquals(sessionsExpectedResponse, result)
+
     }
 
 

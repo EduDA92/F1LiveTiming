@@ -22,4 +22,8 @@ class F1Client @Inject constructor(
         sessionKey: String
     ) = f1Service.getStints(sessionKey)
 
+    suspend fun getSession(
+        sessionKey: String
+    ) = f1Service.getSession(sessionKey)
+
 }

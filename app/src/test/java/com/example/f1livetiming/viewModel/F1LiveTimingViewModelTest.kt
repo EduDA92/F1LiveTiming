@@ -2,13 +2,13 @@ package com.example.f1livetiming.viewModel
 
 import com.example.f1livetiming.data.repository.ResponseState
 import com.example.f1livetiming.data.repository.TestF1LiveTimingRepositoryImpl
-import com.example.f1livetiming.ui.liveTimingScreen.DriverData
 import com.example.f1livetiming.ui.liveTimingScreen.LiveTimingData
 import com.example.f1livetiming.ui.liveTimingScreen.LiveTimingUIState
 import com.example.f1livetiming.ui.liveTimingScreen.LiveTimingViewModel
 import com.example.f1livetiming.ui.model.Driver
 import com.example.f1livetiming.ui.model.DriverPosition
 import com.example.f1livetiming.ui.model.Lap
+import com.example.f1livetiming.ui.model.Session
 import com.example.f1livetiming.ui.model.Stint
 import com.example.f1livetiming.utils.MainDispatcherRule
 import com.example.f1livetiming.utils.fullDataExpectedResponse
@@ -44,7 +44,8 @@ class F1LiveTimingViewModelTest {
     /**
      * The initial value of the [LiveTimingUIState] should be Loading until the combine flow operation for
      * the [LiveTimingData] assembly is done.
-     * The initial value of the [LiveTimingData] is driverDataList = emptyList() */
+     * The initial value of the [LiveTimingData] is driverDataList = emptyList()
+     * sessionName = "Loading", countryCode = "UNK", circuitName = "LiveTiming"*/
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
@@ -60,7 +61,12 @@ class F1LiveTimingViewModelTest {
 
         assertEquals(LiveTimingUIState.Loading, viewModel.liveTimingUIState.value)
         assertEquals(
-            LiveTimingData(driverDataList = persistentListOf()),
+            LiveTimingData(
+                sessionName = "Loading",
+                countryCode = "UNK",
+                circuitName = "LiveTiming",
+                driverDataList = persistentListOf()
+            ),
             viewModel.liveTimingData.value
         )
 
@@ -69,7 +75,7 @@ class F1LiveTimingViewModelTest {
     }
 
     /** When [ResponseState] is Error [LiveTimingUIState] should be Error
-     * [LiveTimingData] driverDataList = emptyList() */
+     * [LiveTimingData] default values */
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun f1LiveTimingViewModel_whenApiSendsError_ErrorState() = runTest {
@@ -87,7 +93,12 @@ class F1LiveTimingViewModelTest {
 
         assertEquals(LiveTimingUIState.Error("Error"), viewModel.liveTimingUIState.value)
         assertEquals(
-            LiveTimingData(driverDataList = persistentListOf()),
+            LiveTimingData(
+                sessionName = "Loading",
+                countryCode = "UNK",
+                circuitName = "LiveTiming",
+                driverDataList = persistentListOf()
+            ),
             viewModel.liveTimingData.value
         )
 
@@ -116,6 +127,16 @@ class F1LiveTimingViewModelTest {
                         lapStart = 1,
                         stintNumber = 4,
                         tyreAgeAtStart = 2
+                    )
+                )
+            )
+            repository.changeSession(
+                listOf(
+                    Session(
+                        sessionName = "Race",
+                        countryName = "Great Britain",
+                        countryCode = "GBR",
+                        circuitName = "Silverstone",
                     )
                 )
             )
@@ -152,6 +173,7 @@ class F1LiveTimingViewModelTest {
         repository.changeDriverList(listOf(Driver("VER", 1, "#FF3671C6")))
         repository.changeLapsList(emptyList())
         repository.changeStintList(emptyList())
+        repository.changeSession(emptyList())
 
         val collectJob = launch(UnconfinedTestDispatcher(testScheduler)) {
             viewModel.liveTimingUIState.collect()
@@ -186,6 +208,7 @@ class F1LiveTimingViewModelTest {
         repository.changeDriverPositionList(listOf(DriverPosition(1, 1)))
         repository.changeDriverList(listOf(Driver("VER", 1, "#FF3671C6")))
         repository.changeLapsList(nullLapListData)
+        repository.changeSession(emptyList())
 
         repository.changeStintList(
             listOf(
