@@ -14,9 +14,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.f1livetiming.R
 
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
@@ -47,7 +49,7 @@ fun DriverMicroSectors(
 
             }
 
-            Text(String.format("%.3f", firstMicroSectorTime), fontSize = 18.sp)
+            Text(stringResource(id = R.string.micro_sector_sr, firstMicroSectorTime), fontSize = 18.sp)
 
         }
 
@@ -66,7 +68,7 @@ fun DriverMicroSectors(
 
             }
 
-            Text(String.format("%.3f", secondMicroSectorTime), fontSize = 18.sp)
+            Text(stringResource(id = R.string.micro_sector_sr, secondMicroSectorTime), fontSize = 18.sp)
 
         }
 
@@ -85,7 +87,7 @@ fun DriverMicroSectors(
 
             }
 
-            Text(String.format("%.3f", thirdMicroSectorTime),fontSize = 18.sp)
+            Text(stringResource(id = R.string.micro_sector_sr, thirdMicroSectorTime),fontSize = 18.sp)
 
         }
     }

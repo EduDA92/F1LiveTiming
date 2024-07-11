@@ -11,6 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.f1livetiming.R
@@ -28,28 +29,32 @@ fun DriverStint(
         when (tireCompound) {
             "SOFT" -> {
                 Image(
-                    painter = painterResource(id = R.drawable.soft), contentDescription = "",
+                    painter = painterResource(id = R.drawable.soft),
+                    contentDescription = stringResource(R.string.soft_tyre_cd),
                     modifier = Modifier.size(36.dp)
                 )
             }
 
             "MEDIUM" -> {
                 Image(
-                    painter = painterResource(id = R.drawable.medium), contentDescription = "",
+                    painter = painterResource(id = R.drawable.medium),
+                    contentDescription = stringResource(R.string.medium_tyre_cd),
                     modifier = Modifier.size(36.dp)
                 )
             }
 
             "HARD" -> {
                 Image(
-                    painter = painterResource(id = R.drawable.hard), contentDescription = "",
+                    painter = painterResource(id = R.drawable.hard),
+                    contentDescription = stringResource(R.string.hard_tyre_cd),
                     modifier = Modifier.size(36.dp)
                 )
             }
 
             "WET" -> {
                 Image(
-                    painter = painterResource(id = R.drawable.wet), contentDescription = "",
+                    painter = painterResource(id = R.drawable.wet),
+                    contentDescription = stringResource(R.string.wet_tyre_cd),
                     modifier = Modifier.size(36.dp)
                 )
             }
@@ -57,14 +62,16 @@ fun DriverStint(
             "INTERMEDIATE" -> {
                 Image(
                     painter = painterResource(id = R.drawable.intermediate),
-                    contentDescription = "", modifier = Modifier.size(36.dp)
+                    contentDescription = stringResource(R.string.intermediate_tyre_cd),
+                    modifier = Modifier.size(36.dp)
                 )
             }
 
             else -> {
                 Image(
                     painter = painterResource(id = R.drawable.unknown),
-                    contentDescription = "", modifier = Modifier.size(36.dp)
+                    contentDescription = stringResource(R.string.unknown_tyre_cd),
+                    modifier = Modifier.size(36.dp)
                 )
             }
         }
@@ -72,10 +79,8 @@ fun DriverStint(
         Spacer(modifier = Modifier.size(4.dp))
 
         Column {
-            val stintLapsString = String.format("L %d", stintLaps)
-            val pitNumberString = String.format("PIT %d", pitNumber)
-            Text(text = stintLapsString)
-            Text(text = pitNumberString, color = Color.Gray)
+            Text(text = stringResource(id = R.string.stint_laps_sr, stintLaps))
+            Text(text = stringResource(id = R.string.pit_number_sr, pitNumber), color = Color.Gray)
         }
 
     }

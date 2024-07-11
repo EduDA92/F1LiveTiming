@@ -22,4 +22,15 @@
     <string name="qat_cd">Qatar flag image</string>
     <string name="uae_cd">Abu dhabi flag image</string>
     <string name="header_text">%1$s: %2$s</string>
+    <string name="stint_laps_sr">"L %1$d"</string>
+    <string name="pit_number_sr">"PIT %1$d"</string>
+    <string name="soft_tyre_cd">soft tyre</string>
+    <string name="medium_tyre_cd">medium tyre</string>
+    <string name="hard_tyre_cd">Hard tyre</string>
+    <string name="wet_tyre_cd">Wet Tyre</string>
+    <string name="intermediate_tyre_cd">Intermediate Tyre</string>
+    <string name="unknown_tyre_cd">Unknown tyre</string>
+    <string name="last_lap_sr">"%1$02d:%2$02d.%3$03d"</string>
+    <string name="best_lap_sr">"%1$02d:%2$02d.%3$03d"</string>
+    <string name="micro_sector_sr">%1$.3f</string>
 </resources>
