@@ -115,7 +115,7 @@ class F1LiveTimingViewModelTest {
 
             /** Setup the state of the repo first */
             repository.changeResponseState(state = ResponseState.SUCCESS)
-            repository.changeDriverPositionList(listOf(DriverPosition(1, 1)))
+            repository.changeDriverPositionList(listOf(DriverPosition(1, 1, 1)))
             repository.changeDriverList(listOf(Driver("VER", 1, "#FF3671C6")))
             repository.changeLapsList(fullLapListData)
             repository.changeStintList(
@@ -169,7 +169,7 @@ class F1LiveTimingViewModelTest {
 
         /** Setup the state of the repo first */
         repository.changeResponseState(state = ResponseState.SUCCESS)
-        repository.changeDriverPositionList(listOf(DriverPosition(1, 1)))
+        repository.changeDriverPositionList(listOf(DriverPosition(1, 1, 1)))
         repository.changeDriverList(listOf(Driver("VER", 1, "#FF3671C6")))
         repository.changeLapsList(emptyList())
         repository.changeStintList(emptyList())
@@ -205,7 +205,7 @@ class F1LiveTimingViewModelTest {
 
         /** Setup the state of the repo first */
         repository.changeResponseState(state = ResponseState.SUCCESS)
-        repository.changeDriverPositionList(listOf(DriverPosition(1, 1)))
+        repository.changeDriverPositionList(listOf(DriverPosition(1, 1, 1)))
         repository.changeDriverList(listOf(Driver("VER", 1, "#FF3671C6")))
         repository.changeLapsList(nullLapListData)
         repository.changeSession(emptyList())

@@ -66,7 +66,13 @@ class F1LiveTimingRepositoryImpl @Inject constructor(
                                         it.date,
                                         DateTimeFormatter.ISO_DATE_TIME
                                     )
-                                }.last().position
+                                }.last().position,
+                                driverPositions.sortedBy {
+                                    LocalDateTime.parse(
+                                        it.date,
+                                        DateTimeFormatter.ISO_DATE_TIME
+                                    )
+                                }.first().position
                             )
                         )
 

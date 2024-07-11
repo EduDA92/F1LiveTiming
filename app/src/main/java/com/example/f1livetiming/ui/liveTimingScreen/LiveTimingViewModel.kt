@@ -84,6 +84,7 @@ class LiveTimingViewModel @Inject constructor(
                 DriverData(
                     driverNumber = it.driverNumber,
                     driverPosition = it.driverPosition,
+                    driverPositionsChanged = it.driverStartingPosition - it.driverPosition,
                     driverAcronym = drivers.firstOrNull { driver -> driver.driverNumber == it.driverNumber }?.driverAcronym ?: "UNK",
                     teamColor = drivers.firstOrNull { driver -> driver.driverNumber == it.driverNumber }?.teamColor ?: "#000000",
                     lastLap = laps.firstOrNull { triple -> triple.first.driverNumber == it.driverNumber }?.first?.lapDuration ?: 0.0,
@@ -145,6 +146,7 @@ data class LiveTimingData(
 data class DriverData(
     val driverNumber: Int,
     val driverPosition: Int,
+    val driverPositionsChanged: Int,
     val driverAcronym: String,
     val teamColor: String,
     val lastLap: Double,

@@ -12,83 +12,103 @@ import kotlinx.collections.immutable.persistentListOf
 val expectedFullDriverPositionResponse = listOf(
     DriverPosition(
         driverPosition = 1,
-        driverNumber = 1
+        driverNumber = 1,
+        driverStartingPosition = 2
     ),
     DriverPosition(
         driverPosition = 2,
-        driverNumber = 4
+        driverNumber = 4,
+        driverStartingPosition = 3
     ),
     DriverPosition(
         driverPosition = 3,
-        driverNumber = 63
+        driverNumber = 63,
+        driverStartingPosition = 1
     ),
     DriverPosition(
         driverPosition = 4,
-        driverNumber = 44
+        driverNumber = 44,
+        driverStartingPosition = 7
     ),
     DriverPosition(
         driverPosition = 5,
-        driverNumber = 81
+        driverNumber = 81,
+        driverStartingPosition = 4
     ),
     DriverPosition(
         driverPosition = 6,
-        driverNumber = 14
+        driverNumber = 14,
+        driverStartingPosition = 6
     ),
     DriverPosition(
         driverPosition = 7,
-        driverNumber = 18
+        driverNumber = 18,
+        driverStartingPosition = 9
     ),
     DriverPosition(
         driverPosition = 8,
-        driverNumber = 3
+        driverNumber = 3,
+        driverStartingPosition = 5
     ),
     DriverPosition(
         driverPosition = 9,
-        driverNumber = 10
+        driverNumber = 10,
+        driverStartingPosition = 15
     ),
     DriverPosition(
         driverPosition = 10,
-        driverNumber = 31
+        driverNumber = 31,
+        driverStartingPosition = 20
     ),
     DriverPosition(
         driverPosition = 11,
-        driverNumber = 27
+        driverNumber = 27,
+        driverStartingPosition = 18
     ),
     DriverPosition(
         driverPosition = 12,
-        driverNumber = 20
+        driverNumber = 20,
+        driverStartingPosition = 14
     ),
     DriverPosition(
         driverPosition = 13,
-        driverNumber = 77
+        driverNumber = 77,
+        driverStartingPosition = 17
     ),
     DriverPosition(
         driverPosition = 14,
-        driverNumber = 22
+        driverNumber = 22,
+        driverStartingPosition = 8
     ),
     DriverPosition(
         driverPosition = 15,
-        driverNumber = 24
+        driverNumber = 24,
+        driverStartingPosition = 19
     ),
     DriverPosition(
         driverPosition = 16,
-        driverNumber = 55
+        driverNumber = 55,
+        driverStartingPosition = 12
     ),
     DriverPosition(
         driverPosition = 17,
-        driverNumber = 23
+        driverNumber = 23,
+        driverStartingPosition = 10
     ),
     DriverPosition(
         driverPosition = 18,
-        driverNumber = 11
+        driverNumber = 11,
+        driverStartingPosition = 16
     ),
     DriverPosition(
         driverPosition = 19,
-        driverNumber = 16
+        driverNumber = 16,
+        driverStartingPosition = 11
     ),
     DriverPosition(
         driverPosition = 20,
-        driverNumber = 2
+        driverNumber = 2,
+        driverStartingPosition = 13
     )
 )
 
@@ -445,6 +465,7 @@ val expectedStintsResponse = listOf(
             DriverData(
                 driverNumber = 1,
                 driverPosition = 1,
+                driverPositionsChanged = 0,
                 driverAcronym = "VER",
                 teamColor = "#FF3671C6",
                 bestLap = 77.776,
@@ -494,6 +515,7 @@ val incompleteDataExpectedResponse = LiveTimingData(
         DriverData(
             driverNumber = 1,
             driverPosition = 1,
+            driverPositionsChanged = 0,
             driverAcronym = "VER",
             teamColor = "#FF3671C6",
             bestLap = 0.0,
@@ -519,6 +541,7 @@ val nullDataExpectedResponse = LiveTimingData(
         DriverData(
             driverNumber = 1,
             driverPosition = 1,
+            driverPositionsChanged = 0,
             driverAcronym = "VER",
             teamColor = "#FF3671C6",
             bestLap = 0.0,

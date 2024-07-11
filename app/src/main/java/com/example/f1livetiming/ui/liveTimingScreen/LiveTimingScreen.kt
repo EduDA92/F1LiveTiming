@@ -31,6 +31,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.f1livetiming.ui.liveTimingScreen.composables.DriverLaps
 import com.example.f1livetiming.ui.liveTimingScreen.composables.DriverMicroSectors
+import com.example.f1livetiming.ui.liveTimingScreen.composables.DriverPositionChange
 import com.example.f1livetiming.ui.liveTimingScreen.composables.DriverStint
 import com.example.f1livetiming.ui.liveTimingScreen.composables.DriverTag
 import com.example.f1livetiming.ui.liveTimingScreen.composables.LiveTimingHeader
@@ -111,6 +112,10 @@ fun LiveTimingScreen(
 
                                 Spacer(modifier = Modifier.size(10.dp))
 
+                                DriverPositionChange(positionChange = it.driverPositionsChanged)
+
+                                Spacer(modifier = Modifier.size(10.dp))
+
                                 DriverLaps(lastLap = it.lastLap, bestLap = it.bestLap)
 
                             }
@@ -154,6 +159,7 @@ fun PreviewFullListLiveTimingScreen() {
                 DriverData(
                     driverNumber = 1,
                     driverPosition = 1,
+                    driverPositionsChanged = 24,
                     driverAcronym = "VER",
                     teamColor = "#3671C6",
                     lastLap = 79.774,
@@ -198,6 +204,7 @@ fun PreviewFullListLiveTimingScreen() {
                 DriverData(
                     driverNumber = 14,
                     driverPosition = 2,
+                    driverPositionsChanged = 0,
                     driverAcronym = "ALO",
                     teamColor = "#229971",
                     lastLap = 79.743,
@@ -242,6 +249,7 @@ fun PreviewFullListLiveTimingScreen() {
                 DriverData(
                     driverNumber = 44,
                     driverPosition = 3,
+                    driverPositionsChanged = -24,
                     driverAcronym = "HAM",
                     teamColor = "#27F4D2",
                     lastLap = 80.041,
