@@ -13,6 +13,7 @@ import com.example.f1livetiming.ui.model.Stint
 import com.example.f1livetiming.utils.MainDispatcherRule
 import com.example.f1livetiming.utils.fullDataExpectedResponse
 import com.example.f1livetiming.utils.incompleteDataExpectedResponse
+import com.example.f1livetiming.utils.noRaceExpectedResponse
 import com.example.f1livetiming.utils.nullDataExpectedResponse
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -115,7 +116,7 @@ class F1LiveTimingViewModelTest {
 
             /** Setup the state of the repo first */
             repository.changeResponseState(state = ResponseState.SUCCESS)
-            repository.changeDriverPositionList(listOf(DriverPosition(1, 1, 1)))
+            repository.changeDriverPositionList(listOf(DriverPosition(1, 3, 1)))
             repository.changeDriverList(listOf(Driver("VER", 1, "#FF3671C6")))
             repository.changeLapsList(fullLapListData)
             repository.changeStintList(
@@ -242,7 +243,60 @@ class F1LiveTimingViewModelTest {
         collectJob2.cancel()
     }
 
-    private val fullLapListData = listOf(
+    /** When the current session its not a Race the positionChange remains at 0*/
+    @Test
+    fun f1LiveTimingViewModel_whenSessionIsNotRace_positionsAreZero() = runTest {
+
+        /** Setup the state of the repo first */
+        repository.changeResponseState(state = ResponseState.SUCCESS)
+        repository.changeDriverPositionList(listOf(DriverPosition(1, 3, 1)))
+        repository.changeDriverList(listOf(Driver("VER", 1, "#FF3671C6")))
+        repository.changeLapsList(fullLapListData)
+        repository.changeStintList(
+            listOf(
+                Stint(
+                    compound = "WET",
+                    driverNumber = 1,
+                    lapEnd = 24,
+                    lapStart = 1,
+                    stintNumber = 4,
+                    tyreAgeAtStart = 2
+                )
+            )
+        )
+        repository.changeSession(
+            listOf(
+                Session(
+                    sessionName = "Qualifying",
+                    countryName = "Great Britain",
+                    countryCode = "GBR",
+                    circuitName = "Silverstone",
+                )
+            )
+        )
+
+        val collectJob = launch(UnconfinedTestDispatcher(testScheduler)) {
+            viewModel.liveTimingUIState.collect()
+        }
+
+        val collectJob2 = launch(UnconfinedTestDispatcher(testScheduler)) {
+            viewModel.liveTimingData.collect()
+        }
+
+
+        assertEquals(LiveTimingUIState.Idle, viewModel.liveTimingUIState.value)
+
+        assertEquals(
+            noRaceExpectedResponse,
+            viewModel.liveTimingData.value
+        )
+
+        collectJob.cancel()
+        collectJob2.cancel()
+
+    }
+
+        private val fullLapListData = listOf(
         Triple(
             first = Lap(
                 driverNumber = 1,

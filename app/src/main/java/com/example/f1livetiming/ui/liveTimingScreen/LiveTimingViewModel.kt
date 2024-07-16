@@ -84,7 +84,7 @@ class LiveTimingViewModel @Inject constructor(
                 DriverData(
                     driverNumber = it.driverNumber,
                     driverPosition = it.driverPosition,
-                    driverPositionsChanged = it.driverStartingPosition - it.driverPosition,
+                    driverPositionsChanged = if(session.getOrNull(0)?.sessionName == "Race") {it.driverStartingPosition - it.driverPosition} else 0,
                     driverAcronym = drivers.firstOrNull { driver -> driver.driverNumber == it.driverNumber }?.driverAcronym ?: "UNK",
                     teamColor = drivers.firstOrNull { driver -> driver.driverNumber == it.driverNumber }?.teamColor ?: "#000000",
                     lastLap = laps.firstOrNull { triple -> triple.first.driverNumber == it.driverNumber }?.first?.lapDuration ?: 0.0,

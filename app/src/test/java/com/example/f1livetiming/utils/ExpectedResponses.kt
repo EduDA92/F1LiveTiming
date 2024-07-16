@@ -464,8 +464,8 @@ val expectedStintsResponse = listOf(
         driverDataList = persistentListOf(
             DriverData(
                 driverNumber = 1,
-                driverPosition = 1,
-                driverPositionsChanged = 0,
+                driverPosition = 3,
+                driverPositionsChanged = -2,
                 driverAcronym = "VER",
                 teamColor = "#FF3671C6",
                 bestLap = 77.776,
@@ -589,5 +589,55 @@ val sessionsExpectedResponse = listOf(
         countryCode = "GBR",
         countryName = "Great Britain",
         circuitName = "Silverstone"
+    )
+)
+
+val noRaceExpectedResponse =  LiveTimingData(
+    sessionName = "Qualifying",
+    countryCode = "GBR",
+    circuitName = "Silverstone",
+    driverDataList = persistentListOf(
+        DriverData(
+            driverNumber = 1,
+            driverPosition = 3,
+            driverPositionsChanged = 0,
+            driverAcronym = "VER",
+            teamColor = "#FF3671C6",
+            bestLap = 77.776,
+            lastLap = 79.774,
+            tireCompound = "WET",
+            pitNumber = 3,
+            stintLaps = 25,
+            firstSectorDuration = 24.062,
+            secondSectorDuration = 32.054,
+            thirdSectorDuration = 23.658,
+            firstMicroSectors = persistentListOf(
+                2048,
+                2049,
+                2049,
+                2049,
+                2049,
+                2049,
+                2049
+            ),
+            secondMicroSectors = persistentListOf(
+                2049,
+                2049,
+                2049,
+                2049,
+                2049,
+                2049,
+                2051,
+                2049
+            ),
+            thirdMicroSectors = persistentListOf(
+                2048,
+                2048,
+                2049,
+                2051,
+                2048,
+                2048
+            )
+        )
     )
 )
