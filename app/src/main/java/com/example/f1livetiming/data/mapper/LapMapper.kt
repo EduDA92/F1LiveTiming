@@ -4,7 +4,7 @@ import com.example.f1livetiming.data.network.model.LapDTO
 import com.example.f1livetiming.ui.model.Lap
 
 
-fun LapDTO.asDomain(): Lap {
+fun LapDTO.asUIModel(): Lap {
 
     return Lap(
         driverNumber = driverNumber,
@@ -20,4 +20,4 @@ fun LapDTO.asDomain(): Lap {
 
 }
 
-fun List<LapDTO>.asDomain() = map { it.asDomain() }
+fun List<LapDTO>.asUIModel() = map { it.asUIModel() }

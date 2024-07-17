@@ -2,7 +2,7 @@ package com.example.f1livetiming.data.repository
 
 import com.example.f1livetiming.data.dispatchers.Dispatcher
 import com.example.f1livetiming.data.dispatchers.F1LiveTimingDispatchers
-import com.example.f1livetiming.data.mapper.asDomain
+import com.example.f1livetiming.data.mapper.asUIModel
 import com.example.f1livetiming.data.network.F1Client
 import com.example.f1livetiming.ui.model.Driver
 import com.example.f1livetiming.ui.model.DriverPosition
@@ -108,7 +108,7 @@ class F1LiveTimingRepositoryImpl @Inject constructor(
         val driverResponse = f1Client.getDrivers("latest")
 
         if (driverResponse.isSuccessful) {
-            emit(driverResponse.body()!!.asDomain())
+            emit(driverResponse.body()!!.asUIModel())
             onIdle()
         } else {
             onError(driverResponse.errorBody().toString())
@@ -152,7 +152,7 @@ class F1LiveTimingRepositoryImpl @Inject constructor(
                             driverLapsList.add(
                                 Triple(
                                     first = lapsList.filter { it.lapDuration != null }
-                                        .maxByOrNull { it.lapNumber }?.asDomain() ?: Lap(
+                                        .maxByOrNull { it.lapNumber }?.asUIModel() ?: Lap(
                                         driverNumber = driverNumber,
                                         lapDuration = null,
                                         lapNumber = 1,
@@ -163,7 +163,7 @@ class F1LiveTimingRepositoryImpl @Inject constructor(
                                         segmentsSector2 = listOf(0, 0, 0, 0, 0, 0, 0, 0),
                                         segmentsSector3 = listOf(0, 0, 0, 0, 0, 0)
                                     ),
-                                    second = lapsList.maxByOrNull { it.lapNumber }!!.asDomain(),
+                                    second = lapsList.maxByOrNull { it.lapNumber }!!.asUIModel(),
                                     third = lapsList.filter { it.lapDuration != null }
                                         .minOfOrNull { it.lapDuration!! } ?: 0.0,
                                 )
@@ -207,7 +207,7 @@ class F1LiveTimingRepositoryImpl @Inject constructor(
                         driverStints.forEach { (_, stintList) ->
 
                             driverStintsList.add(
-                                stintList.maxByOrNull { it.stintNumber }!!.asDomain()
+                                stintList.maxByOrNull { it.stintNumber }!!.asUIModel()
                             )
 
                         }
@@ -239,7 +239,7 @@ class F1LiveTimingRepositoryImpl @Inject constructor(
 
             if (sessionResponse.isSuccessful) {
 
-                emit(sessionResponse.body()!!.asDomain())
+                emit(sessionResponse.body()!!.asUIModel())
                 onIdle()
 
             } else {

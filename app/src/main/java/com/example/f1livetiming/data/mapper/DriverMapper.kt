@@ -5,7 +5,7 @@ import com.example.f1livetiming.ui.model.Driver
 
 private const val argbStartString = "#"
 
-fun DriverDTO.asDomain(): Driver {
+fun DriverDTO.asUIModel(): Driver {
 
     val stringBuilder = StringBuilder()
 
@@ -18,4 +18,4 @@ fun DriverDTO.asDomain(): Driver {
 
 }
 
-fun List<DriverDTO>.asDomain() = map {it.asDomain()}
+fun List<DriverDTO>.asUIModel() = map {it.asUIModel()}

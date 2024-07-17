@@ -3,7 +3,7 @@ package com.example.f1livetiming.data.mapper
 import com.example.f1livetiming.data.network.model.StintDTO
 import com.example.f1livetiming.ui.model.Stint
 
-fun StintDTO.asDomain(): Stint {
+fun StintDTO.asUIModel(): Stint {
 
     return Stint(
         compound = compound,
@@ -16,4 +16,4 @@ fun StintDTO.asDomain(): Stint {
 
 }
 
-fun List<StintDTO>.asDomain() = map { it.asDomain() }
+fun List<StintDTO>.asUIModel() = map { it.asUIModel() }
