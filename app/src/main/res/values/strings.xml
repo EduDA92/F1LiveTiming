@@ -34,4 +34,5 @@
     <string name="best_lap_sr">"%1$02d:%2$02d.%3$03d"</string>
     <string name="micro_sector_sr">%1$.3f</string>
     <string name="positive_position_change_sr">"+%1$d"</string>
+    <string name="interval_sr">"+%1$s"</string>
 </resources>

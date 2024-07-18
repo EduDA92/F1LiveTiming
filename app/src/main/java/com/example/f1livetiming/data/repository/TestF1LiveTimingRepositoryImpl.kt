@@ -2,6 +2,7 @@ package com.example.f1livetiming.data.repository
 
 import com.example.f1livetiming.ui.model.Driver
 import com.example.f1livetiming.ui.model.DriverPosition
+import com.example.f1livetiming.ui.model.Interval
 import com.example.f1livetiming.ui.model.Lap
 import com.example.f1livetiming.ui.model.Session
 import com.example.f1livetiming.ui.model.Stint
@@ -22,6 +23,7 @@ class TestF1LiveTimingRepositoryImpl : F1LiveTimingRepository  {
     private var lapList = emptyList<Triple<Lap, Lap, Double>>()
     private var stintList = emptyList<Stint>()
     private var currentSession = emptyList<Session>()
+    private var intervalList = emptyList<Interval>()
     private var responseState = ResponseState.WAITING
 
     override fun getDriversPositions(
@@ -111,6 +113,21 @@ class TestF1LiveTimingRepositoryImpl : F1LiveTimingRepository  {
         }
     }
 
+    override fun getIntervals(onIdle: () -> Unit, onError: (String) -> Unit): Flow<List<Interval>> = flow {
+        when(responseState){
+            ResponseState.WAITING -> {
+                // no-op
+            }
+            ResponseState.SUCCESS -> {
+                onIdle()
+                emit(intervalList)
+            }
+            ResponseState.ERROR -> {
+                onError("Error")
+            }
+        }
+    }
+
     fun changeDriverPositionList(list: List<DriverPosition>){
         driverPositionsList = list
     }
@@ -129,6 +146,10 @@ class TestF1LiveTimingRepositoryImpl : F1LiveTimingRepository  {
 
     fun changeSession(session: List<Session>){
         currentSession = session
+    }
+
+    fun changeIntervals(intervals: List<Interval>){
+        intervalList = intervals
     }
 
     fun changeResponseState(state: ResponseState){

@@ -1,6 +1,7 @@
 package com.example.f1livetiming.data.di
 
 import com.example.f1livetiming.data.network.F1Service
+import com.example.f1livetiming.data.network.converter.EmptyConverter
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -29,6 +30,7 @@ object NetworkModule {
     fun provideRetrofit(json: Json): Retrofit {
         return Retrofit.Builder()
             .baseUrl(BASE_URL)
+            .addConverterFactory(EmptyConverter())
             .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
             .build()
     }

@@ -4,6 +4,8 @@ package com.example.f1livetiming.ui.liveTimingScreen
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.f1livetiming.data.repository.F1LiveTimingRepository
+import com.example.f1livetiming.ui.model.Interval
+import com.example.f1livetiming.ui.util.combine
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
@@ -12,7 +14,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import javax.inject.Inject
@@ -76,34 +77,66 @@ class LiveTimingViewModel @Inject constructor(
                         )
                     }
                 }
-            )) { positions, drivers, laps, stints, session ->
+            ),
+            liveTimingRepository.getIntervals(
+                onIdle = { _liveTimingUIState.update { LiveTimingUIState.Idle } },
+                onError = { errorMessage ->
+                    _liveTimingUIState.update {
+                        LiveTimingUIState.Error(
+                            errorMessage
+                        )
+                    }
+                }
+            )) { positions, drivers, laps, stints, session, intervals ->
 
 
-            val driverDataList = positions.map {
+            val driverDataList = positions.mapIndexed { index, driverPosition ->
 
                 DriverData(
-                    driverNumber = it.driverNumber,
-                    driverPosition = it.driverPosition,
-                    driverPositionsChanged = if(session.getOrNull(0)?.sessionName == "Race") {it.driverStartingPosition - it.driverPosition} else 0,
-                    driverAcronym = drivers.firstOrNull { driver -> driver.driverNumber == it.driverNumber }?.driverAcronym ?: "UNK",
-                    teamColor = drivers.firstOrNull { driver -> driver.driverNumber == it.driverNumber }?.teamColor ?: "#000000",
-                    lastLap = laps.firstOrNull { triple -> triple.first.driverNumber == it.driverNumber }?.first?.lapDuration ?: 0.0,
-                    bestLap = laps.firstOrNull { triple -> triple.first.driverNumber == it.driverNumber }?.third ?: 0.0,
-                    tireCompound = stints.firstOrNull { stint -> stint.driverNumber == it.driverNumber }?.compound ?: "UNK",
-                    pitNumber = stints.firstOrNull{ stint -> stint.driverNumber == it.driverNumber }?.stintNumber?.minus(1) ?: 0,
-                    stintLaps = stints.firstOrNull{ stint -> stint.driverNumber == it.driverNumber }?.lapEnd?.minus(
-                        stints.firstOrNull{ stint -> stint.driverNumber == it.driverNumber }?.lapStart ?: 0
-                    )?.plus(stints.firstOrNull{ stint -> stint.driverNumber == it.driverNumber }?.tyreAgeAtStart ?: 0) ?: 0,
-                    firstSectorDuration = laps.firstOrNull { triple -> triple.second.driverNumber == it.driverNumber }?.second?.sector1Duration ?: 0.0,
-                    secondSectorDuration = laps.firstOrNull { triple -> triple.second.driverNumber == it.driverNumber }?.second?.sector2Duration ?: 0.0,
-                    thirdSectorDuration = laps.firstOrNull { triple -> triple.second.driverNumber == it.driverNumber }?.second?.sector3Duration ?: 0.0,
-                    firstMicroSectors = laps.firstOrNull { triple -> triple.second.driverNumber == it.driverNumber }?.second?.segmentsSector1?.map{microsector ->
+                    driverNumber = driverPosition.driverNumber,
+                    driverPosition = driverPosition.driverPosition,
+                    driverPositionsChanged = if(session.getOrNull(0)?.sessionName == "Race") {driverPosition.driverStartingPosition - driverPosition.driverPosition} else 0,
+                    driverAcronym = drivers.firstOrNull { driver -> driver.driverNumber == driverPosition.driverNumber }?.driverAcronym ?: "UNK",
+                    teamColor = drivers.firstOrNull { driver -> driver.driverNumber == driverPosition.driverNumber }?.teamColor ?: "#000000",
+                    lastLap = laps.firstOrNull { triple -> triple.first.driverNumber == driverPosition.driverNumber }?.first?.lapDuration ?: 0.0,
+                    bestLap = laps.firstOrNull { triple -> triple.first.driverNumber == driverPosition.driverNumber }?.third ?: 0.0,
+                    tireCompound = stints.firstOrNull { stint -> stint.driverNumber == driverPosition.driverNumber }?.compound ?: "UNK",
+                    pitNumber = stints.firstOrNull{ stint -> stint.driverNumber == driverPosition.driverNumber }?.stintNumber?.minus(1) ?: 0,
+                    interval = if(session.getOrNull(0)?.sessionName == "Race") {
+                        intervals.firstOrNull { interval: Interval ->  interval.driverNumber == driverPosition.driverNumber}?.interval ?: ""
+                    } else {
+                        if(driverPosition.driverPosition == 1){
+                            ""
+                        } else {
+                            (laps.firstOrNull { triple -> triple.first.driverNumber == driverPosition.driverNumber }?.third ?: 0.0).minus(
+                                laps.firstOrNull { triple -> triple.first.driverNumber == positions[index - 1].driverNumber }?.third ?: 0.0
+                            ).toString()
+                        }
+                    },
+                    gapToLeader = if(session.getOrNull(0)?.sessionName == "Race") {
+                        intervals.firstOrNull { interval: Interval ->  interval.driverNumber == driverPosition.driverNumber}?.gapToLeader ?: ""
+                    } else {
+                        if(driverPosition.driverPosition == 1){
+                            ""
+                        } else {
+                            (laps.firstOrNull { triple -> triple.first.driverNumber == driverPosition.driverNumber }?.third ?: 0.0).minus(
+                                laps.firstOrNull { triple -> triple.first.driverNumber == positions[0].driverNumber }?.third ?: 0.0
+                            ).toString()
+                        }
+                    },
+                    stintLaps = stints.firstOrNull{ stint -> stint.driverNumber == driverPosition.driverNumber }?.lapEnd?.minus(
+                        stints.firstOrNull{ stint -> stint.driverNumber == driverPosition.driverNumber }?.lapStart ?: 0
+                    )?.plus(stints.firstOrNull{ stint -> stint.driverNumber == driverPosition.driverNumber }?.tyreAgeAtStart ?: 0) ?: 0,
+                    firstSectorDuration = laps.firstOrNull { triple -> triple.second.driverNumber == driverPosition.driverNumber }?.second?.sector1Duration ?: 0.0,
+                    secondSectorDuration = laps.firstOrNull { triple -> triple.second.driverNumber == driverPosition.driverNumber }?.second?.sector2Duration ?: 0.0,
+                    thirdSectorDuration = laps.firstOrNull { triple -> triple.second.driverNumber == driverPosition.driverNumber }?.second?.sector3Duration ?: 0.0,
+                    firstMicroSectors = laps.firstOrNull { triple -> triple.second.driverNumber == driverPosition.driverNumber }?.second?.segmentsSector1?.map{microsector ->
                         microsector ?: 0
                     }?.toImmutableList() ?: persistentListOf(),
-                    secondMicroSectors = laps.firstOrNull { triple -> triple.second.driverNumber == it.driverNumber }?.second?.segmentsSector2?.map{microsector ->
+                    secondMicroSectors = laps.firstOrNull { triple -> triple.second.driverNumber == driverPosition.driverNumber }?.second?.segmentsSector2?.map{microsector ->
                         microsector ?: 0
                     }?.toImmutableList() ?: persistentListOf(),
-                    thirdMicroSectors = laps.firstOrNull { triple -> triple.second.driverNumber == it.driverNumber }?.second?.segmentsSector3?.map{microsector ->
+                    thirdMicroSectors = laps.firstOrNull { triple -> triple.second.driverNumber == driverPosition.driverNumber }?.second?.segmentsSector3?.map{microsector ->
                         microsector ?: 0
                     }?.toImmutableList() ?: persistentListOf(),
                 )
@@ -154,6 +187,8 @@ data class DriverData(
     val tireCompound: String,
     val stintLaps: Int,
     val pitNumber: Int,
+    val interval: String,
+    val gapToLeader: String,
     val firstSectorDuration: Double,
     val secondSectorDuration: Double,
     val thirdSectorDuration: Double,

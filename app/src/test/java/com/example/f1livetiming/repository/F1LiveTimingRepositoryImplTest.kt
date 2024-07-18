@@ -2,8 +2,10 @@ package com.example.f1livetiming.repository
 
 import com.example.f1livetiming.data.network.F1Client
 import com.example.f1livetiming.data.network.F1Service
+import com.example.f1livetiming.data.network.converter.EmptyConverter
 import com.example.f1livetiming.data.repository.F1LiveTimingRepositoryImpl
 import com.example.f1livetiming.ui.model.DriverPosition
+import com.example.f1livetiming.ui.model.Interval
 import com.example.f1livetiming.ui.model.Lap
 import com.example.f1livetiming.ui.model.Stint
 import com.example.f1livetiming.utils.MainDispatcherRule
@@ -13,6 +15,7 @@ import com.example.f1livetiming.utils.expectedFullDriverPositionResponse
 import com.example.f1livetiming.utils.expectedLapsResponse
 import com.example.f1livetiming.utils.expectedNullLapDurationResponse
 import com.example.f1livetiming.utils.expectedStintsResponse
+import com.example.f1livetiming.utils.intervalsExpectedResponse
 import com.example.f1livetiming.utils.sessionsExpectedResponse
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
@@ -51,6 +54,7 @@ class F1LiveTimingRepositoryImplTest {
 
         f1Service = Retrofit.Builder()
             .baseUrl(mockWebServer.url("/"))
+            .addConverterFactory(EmptyConverter())
             .addConverterFactory(networkJson.asConverterFactory("application/json".toMediaType()))
             .build()
             .create(F1Service::class.java)
@@ -190,6 +194,34 @@ class F1LiveTimingRepositoryImplTest {
         ).first()
 
         assertEquals(sessionsExpectedResponse, result)
+
+    }
+
+    @Test
+    fun f1LiveTimingRepositoryImpl_intervalResponse_returnsExpectedResponse() = runTest {
+
+        mockWebServer.enqueueResponse("IntervalResponse.json")
+
+        val result = repository.getIntervals(
+            onIdle = {},
+            onError = {}
+        ).first().filter { it.driverNumber == 44 || it.driverNumber == 1 || it.driverNumber == 3 || it.driverNumber == 4 }.sortedBy { it.driverNumber }
+
+        assertEquals(intervalsExpectedResponse, result)
+
+    }
+
+    @Test
+    fun f1LiveTimingRepositoryImpl_nullIntervalResponse_returnsEmptyList() = runTest {
+
+        mockWebServer.enqueueResponse("nullResponse.json")
+
+        val result = repository.getIntervals(
+            onIdle = {},
+            onError = {}
+        ).first()
+
+        assertEquals(emptyList<Interval>(), result)
 
     }
 

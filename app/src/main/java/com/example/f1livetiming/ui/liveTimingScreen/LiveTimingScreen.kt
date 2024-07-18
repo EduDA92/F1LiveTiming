@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.graphics.toColorInt
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.f1livetiming.ui.liveTimingScreen.composables.DriverInterval
 import com.example.f1livetiming.ui.liveTimingScreen.composables.DriverLaps
 import com.example.f1livetiming.ui.liveTimingScreen.composables.DriverMicroSectors
 import com.example.f1livetiming.ui.liveTimingScreen.composables.DriverPositionChange
@@ -102,7 +103,7 @@ fun LiveTimingScreen(
                                     color = Color(it.teamColor.toColorInt())
                                 )
 
-                                Spacer(modifier = Modifier.size(10.dp))
+                                Spacer(modifier = Modifier.size(5.dp))
 
                                 DriverStint(
                                     tireCompound = it.tireCompound,
@@ -110,11 +111,15 @@ fun LiveTimingScreen(
                                     pitNumber = it.pitNumber
                                 )
 
-                                Spacer(modifier = Modifier.size(10.dp))
+                                Spacer(modifier = Modifier.size(5.dp))
 
                                 DriverPositionChange(positionChange = it.driverPositionsChanged)
 
-                                Spacer(modifier = Modifier.size(10.dp))
+                                Spacer(modifier = Modifier.size(5.dp))
+                                
+                                DriverInterval(gapToLeader = it.gapToLeader, interval = it.interval)
+
+                                Spacer(modifier = Modifier.size(5.dp))
 
                                 DriverLaps(lastLap = it.lastLap, bestLap = it.bestLap)
 
@@ -167,6 +172,8 @@ fun PreviewFullListLiveTimingScreen() {
                     tireCompound = "SOFT",
                     pitNumber = 3,
                     stintLaps = 23,
+                    interval = "95.554",
+                    gapToLeader = "1L",
                     firstSectorDuration = 22.5,
                     secondSectorDuration = 22.6,
                     thirdSectorDuration = 76.9,
@@ -212,6 +219,8 @@ fun PreviewFullListLiveTimingScreen() {
                     tireCompound = "HARD",
                     pitNumber = 3,
                     stintLaps = 23,
+                    interval = "123.554",
+                    gapToLeader = "10L",
                     firstSectorDuration = 22.5,
                     secondSectorDuration = 22.6,
                     thirdSectorDuration = 76.9,
@@ -257,6 +266,8 @@ fun PreviewFullListLiveTimingScreen() {
                     tireCompound = "WET",
                     pitNumber = 3,
                     stintLaps = 23,
+                    interval = "0",
+                    gapToLeader = "0",
                     firstSectorDuration = 22.5,
                     secondSectorDuration = 22.6,
                     thirdSectorDuration = 76.9,

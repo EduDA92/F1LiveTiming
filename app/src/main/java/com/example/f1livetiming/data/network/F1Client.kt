@@ -26,4 +26,8 @@ class F1Client @Inject constructor(
         sessionKey: String
     ) = f1Service.getSession(sessionKey)
 
+    suspend fun getIntervals(
+        sessionKey: String
+    ) = f1Service.getIntervals(sessionKey)
+
 }

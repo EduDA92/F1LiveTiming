@@ -7,6 +7,7 @@ import com.example.f1livetiming.ui.liveTimingScreen.LiveTimingUIState
 import com.example.f1livetiming.ui.liveTimingScreen.LiveTimingViewModel
 import com.example.f1livetiming.ui.model.Driver
 import com.example.f1livetiming.ui.model.DriverPosition
+import com.example.f1livetiming.ui.model.Interval
 import com.example.f1livetiming.ui.model.Lap
 import com.example.f1livetiming.ui.model.Session
 import com.example.f1livetiming.ui.model.Stint
@@ -141,6 +142,15 @@ class F1LiveTimingViewModelTest {
                     )
                 )
             )
+            repository.changeIntervals(
+                listOf(
+                    Interval(
+                        driverNumber = 1,
+                        gapToLeader = "0",
+                        interval = "0"
+                    )
+                )
+            )
 
             val collectJob = launch(UnconfinedTestDispatcher(testScheduler)) {
                 viewModel.liveTimingUIState.collect()
@@ -175,6 +185,7 @@ class F1LiveTimingViewModelTest {
         repository.changeLapsList(emptyList())
         repository.changeStintList(emptyList())
         repository.changeSession(emptyList())
+        repository.changeIntervals(emptyList())
 
         val collectJob = launch(UnconfinedTestDispatcher(testScheduler)) {
             viewModel.liveTimingUIState.collect()
@@ -243,60 +254,96 @@ class F1LiveTimingViewModelTest {
         collectJob2.cancel()
     }
 
-    /** When the current session its not a Race the positionChange remains at 0*/
+    /** When the current session its not a Race the positionChange remains at 0
+     * and the intervals are calculated based on the fastest lap difference */
+    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun f1LiveTimingViewModel_whenSessionIsNotRace_positionsAreZero() = runTest {
+    fun f1LiveTimingViewModel_whenSessionIsNotRace_positionsAreZeroAndIntervalsAreCalculatedDifferent() =
+        runTest {
 
-        /** Setup the state of the repo first */
-        repository.changeResponseState(state = ResponseState.SUCCESS)
-        repository.changeDriverPositionList(listOf(DriverPosition(1, 3, 1)))
-        repository.changeDriverList(listOf(Driver("VER", 1, "#FF3671C6")))
-        repository.changeLapsList(fullLapListData)
-        repository.changeStintList(
-            listOf(
-                Stint(
-                    compound = "WET",
-                    driverNumber = 1,
-                    lapEnd = 24,
-                    lapStart = 1,
-                    stintNumber = 4,
-                    tyreAgeAtStart = 2
+            /** Setup the state of the repo first */
+            repository.changeResponseState(state = ResponseState.SUCCESS)
+            repository.changeDriverPositionList(
+                listOf(
+                    DriverPosition(1, 1, 1),
+                    DriverPosition(14, 2, 2)
                 )
             )
-        )
-        repository.changeSession(
-            listOf(
-                Session(
-                    sessionName = "Qualifying",
-                    countryName = "Great Britain",
-                    countryCode = "GBR",
-                    circuitName = "Silverstone",
+            repository.changeDriverList(
+                listOf(
+                    Driver("VER", 1, "#FF3671C6"),
+                    Driver("ALO", 14, "#FF358C75")
                 )
             )
-        )
+            repository.changeLapsList(noRaceLapListData)
+            repository.changeStintList(
+                listOf(
+                    Stint(
+                        compound = "WET",
+                        driverNumber = 1,
+                        lapEnd = 24,
+                        lapStart = 1,
+                        stintNumber = 4,
+                        tyreAgeAtStart = 2
+                    ),
+                    Stint(
+                        compound = "WET",
+                        driverNumber = 14,
+                        lapEnd = 24,
+                        lapStart = 1,
+                        stintNumber = 4,
+                        tyreAgeAtStart = 2
+                    )
+                )
+            )
+            repository.changeSession(
+                listOf(
+                    Session(
+                        sessionName = "Qualifying",
+                        countryName = "Great Britain",
+                        countryCode = "GBR",
+                        circuitName = "Silverstone",
+                    )
+                )
+            )
 
-        val collectJob = launch(UnconfinedTestDispatcher(testScheduler)) {
-            viewModel.liveTimingUIState.collect()
+            repository.changeIntervals(
+                listOf(
+                    Interval(
+                        driverNumber = 1,
+                        gapToLeader = "0",
+                        interval = "0"
+                    ),
+                    Interval(
+                        driverNumber = 14,
+                        gapToLeader = "1.567",
+                        interval = "1.567"
+                    )
+                )
+            )
+
+            val collectJob = launch(UnconfinedTestDispatcher(testScheduler)) {
+                viewModel.liveTimingUIState.collect()
+            }
+
+            val collectJob2 = launch(UnconfinedTestDispatcher(testScheduler)) {
+                viewModel.liveTimingData.collect()
+            }
+
+
+            assertEquals(LiveTimingUIState.Idle, viewModel.liveTimingUIState.value)
+
+            assertEquals(
+                noRaceExpectedResponse,
+                viewModel.liveTimingData.value
+            )
+
+            collectJob.cancel()
+            collectJob2.cancel()
+
         }
 
-        val collectJob2 = launch(UnconfinedTestDispatcher(testScheduler)) {
-            viewModel.liveTimingData.collect()
-        }
-
-
-        assertEquals(LiveTimingUIState.Idle, viewModel.liveTimingUIState.value)
-
-        assertEquals(
-            noRaceExpectedResponse,
-            viewModel.liveTimingData.value
-        )
-
-        collectJob.cancel()
-        collectJob2.cancel()
-
-    }
-
-        private val fullLapListData = listOf(
+    private val fullLapListData = listOf(
         Triple(
             first = Lap(
                 driverNumber = 1,
@@ -449,6 +496,159 @@ class F1LiveTimingViewModelTest {
 
             ),
             third = 0.0
+        )
+    )
+
+    private val noRaceLapListData = listOf(
+        Triple(
+            first = Lap(
+                driverNumber = 1,
+                lapDuration = 79.774,
+                lapNumber = 1,
+                sector1Duration = 24.062,
+                sector2Duration = 32.054,
+                sector3Duration = 23.658,
+                segmentsSector1 = listOf(
+                    2048,
+                    2049,
+                    2049,
+                    2049,
+                    2049,
+                    2049,
+                    2049
+                ),
+                segmentsSector2 = listOf(
+                    2049,
+                    2049,
+                    2049,
+                    2049,
+                    2049,
+                    2049,
+                    2051,
+                    2049
+                ),
+                segmentsSector3 = listOf(
+                    2048,
+                    2048,
+                    2049,
+                    2051,
+                    2048,
+                    2048
+                )
+
+            ),
+            second = Lap(
+                driverNumber = 1,
+                lapDuration = 79.774,
+                lapNumber = 1,
+                sector1Duration = 24.062,
+                sector2Duration = 32.054,
+                sector3Duration = 23.658,
+                segmentsSector1 = listOf(
+                    2048,
+                    2049,
+                    2049,
+                    2049,
+                    2049,
+                    2049,
+                    2049
+                ),
+                segmentsSector2 = listOf(
+                    2049,
+                    2049,
+                    2049,
+                    2049,
+                    2049,
+                    2049,
+                    2051,
+                    2049
+                ),
+                segmentsSector3 = listOf(
+                    2048,
+                    2048,
+                    2049,
+                    2051,
+                    2048,
+                    2048
+                )
+
+            ),
+            third = 77.776
+        ),
+        Triple(
+            first = Lap(
+                driverNumber = 14,
+                lapDuration = 79.774,
+                lapNumber = 1,
+                sector1Duration = 24.062,
+                sector2Duration = 32.054,
+                sector3Duration = 23.658,
+                segmentsSector1 = listOf(
+                    2048,
+                    2049,
+                    2049,
+                    2049,
+                    2049,
+                    2049,
+                    2049
+                ),
+                segmentsSector2 = listOf(
+                    2049,
+                    2049,
+                    2049,
+                    2049,
+                    2049,
+                    2049,
+                    2051,
+                    2049
+                ),
+                segmentsSector3 = listOf(
+                    2048,
+                    2048,
+                    2049,
+                    2051,
+                    2048,
+                    2048
+                )
+
+            ),
+            second = Lap(
+                driverNumber = 14,
+                lapDuration = 79.774,
+                lapNumber = 1,
+                sector1Duration = 24.062,
+                sector2Duration = 32.054,
+                sector3Duration = 23.658,
+                segmentsSector1 = listOf(
+                    2048,
+                    2049,
+                    2049,
+                    2049,
+                    2049,
+                    2049,
+                    2049
+                ),
+                segmentsSector2 = listOf(
+                    2049,
+                    2049,
+                    2049,
+                    2049,
+                    2049,
+                    2049,
+                    2051,
+                    2049
+                ),
+                segmentsSector3 = listOf(
+                    2048,
+                    2048,
+                    2049,
+                    2051,
+                    2048,
+                    2048
+                )
+
+            ),
+            third = 79.776
         )
     )
 

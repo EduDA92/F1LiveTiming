@@ -2,6 +2,7 @@ package com.example.f1livetiming.data.network
 
 import com.example.f1livetiming.data.network.model.DriverDTO
 import com.example.f1livetiming.data.network.model.DriverPositionDTO
+import com.example.f1livetiming.data.network.model.IntervalDTO
 import com.example.f1livetiming.data.network.model.LapDTO
 import com.example.f1livetiming.data.network.model.SessionDTO
 import com.example.f1livetiming.data.network.model.StintDTO
@@ -36,5 +37,10 @@ interface F1Service {
     suspend fun getSession(
         @Query("session_key") sessionKey: String
     ): Response<List<SessionDTO>>
+
+    @GET("intervals")
+    suspend fun getIntervals(
+        @Query("session_key") sessionKey: String
+    ): Response<List<IntervalDTO>?>
 
 }

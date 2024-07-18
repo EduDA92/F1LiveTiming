@@ -6,6 +6,7 @@ import com.example.f1livetiming.data.mapper.asUIModel
 import com.example.f1livetiming.data.network.F1Client
 import com.example.f1livetiming.ui.model.Driver
 import com.example.f1livetiming.ui.model.DriverPosition
+import com.example.f1livetiming.ui.model.Interval
 import com.example.f1livetiming.ui.model.Lap
 import com.example.f1livetiming.ui.model.Session
 import com.example.f1livetiming.ui.model.Stint
@@ -15,9 +16,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.retryWhen
+import kotlinx.serialization.json.contentOrNull
+import kotlinx.serialization.json.jsonPrimitive
 import java.io.IOException
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 private const val TAG = "F1PastEventTimingRepo"
@@ -61,18 +62,8 @@ class F1LiveTimingRepositoryImpl @Inject constructor(
                         driverPositionList.add(
                             DriverPosition(
                                 driverNumber,
-                                driverPositions.sortedBy {
-                                    LocalDateTime.parse(
-                                        it.date,
-                                        DateTimeFormatter.ISO_DATE_TIME
-                                    )
-                                }.last().position,
-                                driverPositions.sortedBy {
-                                    LocalDateTime.parse(
-                                        it.date,
-                                        DateTimeFormatter.ISO_DATE_TIME
-                                    )
-                                }.first().position
+                                driverPositions.last().position,
+                                driverPositions.first().position
                             )
                         )
 
@@ -255,4 +246,58 @@ class F1LiveTimingRepositoryImpl @Inject constructor(
                 false
             }
         }.flowOn(ioDispatcher)
+
+    /**get the interval list from the API and return a list with the latest [Interval] */
+
+    override fun getIntervals(onIdle: () -> Unit, onError: (String) -> Unit): Flow<List<Interval>> = flow<List<Interval>> {
+
+        val intervalsResponse = f1Client.getIntervals("latest")
+
+        while (true){
+
+            try{
+
+                if(intervalsResponse.isSuccessful){
+
+                    /** The intervals endpoint only works with the Race session otherwise will return an empty Body,
+                     * so if the sessions its not a race emit an empty list */
+
+                    if(intervalsResponse.body() == null){
+                        emit(emptyList())
+                    } else {
+                        val driverIntervals = intervalsResponse.body()!!.groupBy { it.driverNumber }
+                        val driverIntervalList = mutableListOf<Interval>()
+
+                        driverIntervals.forEach { (driverNumber, intervalList) ->
+
+
+                            driverIntervalList.add(
+                                Interval(
+                                    driverNumber = driverNumber,
+                                    gapToLeader = intervalList.last().gapToLeader?.jsonPrimitive?.contentOrNull,
+                                    interval = intervalList.last().interval?.jsonPrimitive?.contentOrNull
+                                )
+                            )
+
+                        }
+
+                        emit(driverIntervalList)
+                        onIdle()
+                    }
+
+                } else {
+                    onError(intervalsResponse.errorBody().toString())
+                }
+
+            }catch (e: Exception){
+
+                onError(e.message.toString())
+
+            }
+
+            delay(4000)
+
+        }
+
+    }.flowOn(ioDispatcher)
 }

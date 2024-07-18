@@ -4,6 +4,7 @@ import com.example.f1livetiming.ui.liveTimingScreen.DriverData
 import com.example.f1livetiming.ui.liveTimingScreen.LiveTimingData
 import com.example.f1livetiming.ui.model.Driver
 import com.example.f1livetiming.ui.model.DriverPosition
+import com.example.f1livetiming.ui.model.Interval
 import com.example.f1livetiming.ui.model.Lap
 import com.example.f1livetiming.ui.model.Session
 import com.example.f1livetiming.ui.model.Stint
@@ -473,6 +474,8 @@ val expectedStintsResponse = listOf(
                 tireCompound = "WET",
                 pitNumber = 3,
                 stintLaps = 25,
+                gapToLeader = "0",
+                interval = "0",
                 firstSectorDuration = 24.062,
                 secondSectorDuration = 32.054,
                 thirdSectorDuration = 23.658,
@@ -523,6 +526,8 @@ val incompleteDataExpectedResponse = LiveTimingData(
             tireCompound = "UNK",
             pitNumber = 0,
             stintLaps = 0,
+            gapToLeader = "",
+            interval = "",
             firstSectorDuration = 0.0,
             secondSectorDuration = 0.0,
             thirdSectorDuration = 0.0,
@@ -549,6 +554,8 @@ val nullDataExpectedResponse = LiveTimingData(
             tireCompound = "UNK",
             pitNumber = 3,
             stintLaps = 23,
+            gapToLeader = "",
+            interval = "",
             firstSectorDuration = 0.0,
             secondSectorDuration = 32.054,
             thirdSectorDuration = 23.658,
@@ -599,7 +606,7 @@ val noRaceExpectedResponse =  LiveTimingData(
     driverDataList = persistentListOf(
         DriverData(
             driverNumber = 1,
-            driverPosition = 3,
+            driverPosition = 1,
             driverPositionsChanged = 0,
             driverAcronym = "VER",
             teamColor = "#FF3671C6",
@@ -608,6 +615,52 @@ val noRaceExpectedResponse =  LiveTimingData(
             tireCompound = "WET",
             pitNumber = 3,
             stintLaps = 25,
+            gapToLeader = "",
+            interval = "",
+            firstSectorDuration = 24.062,
+            secondSectorDuration = 32.054,
+            thirdSectorDuration = 23.658,
+            firstMicroSectors = persistentListOf(
+                2048,
+                2049,
+                2049,
+                2049,
+                2049,
+                2049,
+                2049
+            ),
+            secondMicroSectors = persistentListOf(
+                2049,
+                2049,
+                2049,
+                2049,
+                2049,
+                2049,
+                2051,
+                2049
+            ),
+            thirdMicroSectors = persistentListOf(
+                2048,
+                2048,
+                2049,
+                2051,
+                2048,
+                2048
+            )
+        ),
+        DriverData(
+            driverNumber = 14,
+            driverPosition = 2,
+            driverPositionsChanged = 0,
+            driverAcronym = "ALO",
+            teamColor = "#FF358C75",
+            bestLap = 79.776,
+            lastLap = 79.774,
+            tireCompound = "WET",
+            pitNumber = 3,
+            stintLaps = 25,
+            gapToLeader = "2.0",
+            interval = "2.0",
             firstSectorDuration = 24.062,
             secondSectorDuration = 32.054,
             thirdSectorDuration = 23.658,
@@ -640,4 +693,28 @@ val noRaceExpectedResponse =  LiveTimingData(
             )
         )
     )
+)
+
+val intervalsExpectedResponse = listOf(
+    Interval(
+        driverNumber = 1,
+        gapToLeader = "1.465",
+        interval = "1.465"
+    ),
+    Interval(
+        driverNumber = 3,
+        gapToLeader = "1L",
+        interval = null
+    ),
+    Interval(
+        driverNumber = 4,
+        gapToLeader = "7.547",
+        interval = "6.082"
+    ),
+    Interval(
+        driverNumber = 44,
+        gapToLeader = "0",
+        interval = "0"
+    ),
+
 )
