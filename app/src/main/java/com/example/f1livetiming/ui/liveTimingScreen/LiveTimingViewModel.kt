@@ -108,9 +108,17 @@ class LiveTimingViewModel @Inject constructor(
                         if(driverPosition.driverPosition == 1){
                             ""
                         } else {
-                            (laps.firstOrNull { triple -> triple.first.driverNumber == driverPosition.driverNumber }?.third ?: 0.0).minus(
-                                laps.firstOrNull { triple -> triple.first.driverNumber == positions[index - 1].driverNumber }?.third ?: 0.0
-                            ).toString()
+                            /** Avoid negative number when the current driver has no time set */
+                            if((laps.firstOrNull { triple -> triple.first.driverNumber == driverPosition.driverNumber }?.third ?: 0.0).minus(
+                                    laps.firstOrNull { triple -> triple.first.driverNumber == positions[index - 1].driverNumber }?.third ?: 0.0
+                                ) > 0){
+                                (laps.firstOrNull { triple -> triple.first.driverNumber == driverPosition.driverNumber }?.third ?: 0.0).minus(
+                                    laps.firstOrNull { triple -> triple.first.driverNumber == positions[index - 1].driverNumber }?.third ?: 0.0
+                                ).toString()
+                            } else {
+                                ""
+                            }
+
                         }
                     },
                     gapToLeader = if(session.getOrNull(0)?.sessionName == "Race") {
@@ -119,9 +127,15 @@ class LiveTimingViewModel @Inject constructor(
                         if(driverPosition.driverPosition == 1){
                             ""
                         } else {
-                            (laps.firstOrNull { triple -> triple.first.driverNumber == driverPosition.driverNumber }?.third ?: 0.0).minus(
-                                laps.firstOrNull { triple -> triple.first.driverNumber == positions[0].driverNumber }?.third ?: 0.0
-                            ).toString()
+                            if((laps.firstOrNull { triple -> triple.first.driverNumber == driverPosition.driverNumber }?.third ?: 0.0).minus(
+                                    laps.firstOrNull { triple -> triple.first.driverNumber == positions[0].driverNumber }?.third ?: 0.0
+                                ) > 0){
+                                (laps.firstOrNull { triple -> triple.first.driverNumber == driverPosition.driverNumber }?.third ?: 0.0).minus(
+                                    laps.firstOrNull { triple -> triple.first.driverNumber == positions[0].driverNumber }?.third ?: 0.0
+                                ).toString()
+                            } else {
+                                ""
+                            }
                         }
                     },
                     stintLaps = stints.firstOrNull{ stint -> stint.driverNumber == driverPosition.driverNumber }?.lapEnd?.minus(
