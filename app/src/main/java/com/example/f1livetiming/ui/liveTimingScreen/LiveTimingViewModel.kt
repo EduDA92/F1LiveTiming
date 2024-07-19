@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import java.math.RoundingMode
 import javax.inject.Inject
 
 @HiltViewModel
@@ -114,7 +115,7 @@ class LiveTimingViewModel @Inject constructor(
                                 ) > 0){
                                 (laps.firstOrNull { triple -> triple.first.driverNumber == driverPosition.driverNumber }?.third ?: 0.0).minus(
                                     laps.firstOrNull { triple -> triple.first.driverNumber == positions[index - 1].driverNumber }?.third ?: 0.0
-                                ).toString()
+                                ).toBigDecimal().setScale(3, RoundingMode.UP).toString()
                             } else {
                                 ""
                             }
@@ -132,7 +133,7 @@ class LiveTimingViewModel @Inject constructor(
                                 ) > 0){
                                 (laps.firstOrNull { triple -> triple.first.driverNumber == driverPosition.driverNumber }?.third ?: 0.0).minus(
                                     laps.firstOrNull { triple -> triple.first.driverNumber == positions[0].driverNumber }?.third ?: 0.0
-                                ).toString()
+                                ).toBigDecimal().setScale(3, RoundingMode.UP).toString()
                             } else {
                                 ""
                             }
