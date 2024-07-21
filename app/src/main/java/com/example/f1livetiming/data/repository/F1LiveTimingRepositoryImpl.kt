@@ -251,11 +251,11 @@ class F1LiveTimingRepositoryImpl @Inject constructor(
 
     override fun getIntervals(onIdle: () -> Unit, onError: (String) -> Unit): Flow<List<Interval>> = flow<List<Interval>> {
 
-        val intervalsResponse = f1Client.getIntervals("latest")
-
         while (true){
 
             try{
+
+                val intervalsResponse = f1Client.getIntervals("latest")
 
                 if(intervalsResponse.isSuccessful){
 
