@@ -1,10 +1,15 @@
 package com.example.f1livetiming
 
 import androidx.activity.ComponentActivity
+import androidx.compose.ui.test.SemanticsNodeInteractionCollection
+import androidx.compose.ui.test.assertAll
+import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performClick
 import com.example.f1livetiming.ui.liveTimingScreen.DriverData
 import com.example.f1livetiming.ui.liveTimingScreen.LiveTimingData
 import com.example.f1livetiming.ui.liveTimingScreen.LiveTimingScreen
@@ -95,6 +100,36 @@ class LiveTimingScreenTest {
         composeTestRule.onNodeWithText(bestLapFormatted).assertExists()
 
 
+    }
+
+    @Test
+    fun driverTimingData_whenTap_displaysMicrosectors(){
+
+        composeTestRule.setContent {
+            LiveTimingScreen(
+                state = LiveTimingUIState.Idle,
+                liveTimingData = data
+            )
+        }
+
+        composeTestRule.onNodeWithTag(composeTestRule.activity.getString(R.string.driver_box_test_tag)).performClick()
+
+
+        //Check Micro Sector Duration
+        composeTestRule.onNodeWithText(composeTestRule.activity.getString(R.string.micro_sector_sr, data.driverDataList[0].firstSectorDuration)).assertExists()
+        composeTestRule.onNodeWithText(composeTestRule.activity.getString(R.string.micro_sector_sr, data.driverDataList[0].secondSectorDuration)).assertExists()
+        composeTestRule.onNodeWithText(composeTestRule.activity.getString(R.string.micro_sector_sr, data.driverDataList[0].thirdSectorDuration)).assertExists()
+
+        //Check dots are present
+        composeTestRule.onAllNodesWithTag(composeTestRule.activity.getString(R.string.micro_sector_color_dot_test_tag)).assertAreDisplayed()
+
+    }
+
+    private fun SemanticsNodeInteractionCollection.assertAreDisplayed(): SemanticsNodeInteractionCollection {
+        fetchSemanticsNodes().forEachIndexed { index, _ ->
+            get(index).assertIsDisplayed()
+        }
+        return this
     }
 
     private val data =  LiveTimingData(

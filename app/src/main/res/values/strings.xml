@@ -38,4 +38,6 @@
     <string name="idle_test_tag">"idle"</string>
     <string name="loading_test_tag">"loading"</string>
     <string name="error_test_tag">"error"</string>
+    <string name="driver_box_test_tag">driver box test tag</string>
+    <string name="micro_sector_color_dot_test_tag">micro sector dot test tag</string>
 </resources>
