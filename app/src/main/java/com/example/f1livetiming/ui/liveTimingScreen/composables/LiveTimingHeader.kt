@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -174,19 +175,25 @@ fun LiveTimingHeader(
 
         when (liveTimingUIState) {
             is LiveTimingUIState.Error -> {
-                Canvas(modifier = Modifier.size(12.dp)) {
+                Canvas(modifier = Modifier
+                    .size(12.dp)
+                    .testTag(stringResource(id = R.string.error_test_tag))) {
                     drawCircle(Color(0xFFE80020))
                 }
             }
 
             LiveTimingUIState.Idle -> {
-                Canvas(modifier = Modifier.size(12.dp)) {
+                Canvas(modifier = Modifier
+                    .size(12.dp)
+                    .testTag(stringResource(id = R.string.idle_test_tag))) {
                     drawCircle(Color(0xFF229971))
                 }
             }
 
             LiveTimingUIState.Loading -> {
-                Canvas(modifier = Modifier.size(12.dp)) {
+                Canvas(modifier = Modifier
+                    .size(12.dp)
+                    .testTag(stringResource(id = R.string.loading_test_tag))) {
                     drawCircle(Color(0xFFB6BABD))
                 }
             }
