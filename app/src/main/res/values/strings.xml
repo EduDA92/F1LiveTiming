@@ -35,4 +35,7 @@
     <string name="micro_sector_sr">%1$.3f</string>
     <string name="positive_position_change_sr">"+%1$d"</string>
     <string name="interval_sr">"+%1$s"</string>
+    <string name="idle_test_tag">"idle"</string>
+    <string name="loading_test_tag">"loading"</string>
+    <string name="error_test_tag">"error"</string>
 </resources>
