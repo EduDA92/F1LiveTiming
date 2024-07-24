@@ -25,11 +25,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.toColorInt
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.f1livetiming.R
 import com.example.f1livetiming.ui.liveTimingScreen.composables.DriverInterval
 import com.example.f1livetiming.ui.liveTimingScreen.composables.DriverLaps
 import com.example.f1livetiming.ui.liveTimingScreen.composables.DriverMicroSectors
@@ -88,7 +91,8 @@ fun LiveTimingScreen(
 
                     Box(modifier = Modifier
                         .animateContentSize()
-                        .clickable { expanded = !expanded }) {
+                        .clickable { expanded = !expanded }
+                        .testTag(stringResource(id = R.string.driver_box_test_tag))) {
                         Column(verticalArrangement = Arrangement.spacedBy(5.dp)) {
 
                             Row(

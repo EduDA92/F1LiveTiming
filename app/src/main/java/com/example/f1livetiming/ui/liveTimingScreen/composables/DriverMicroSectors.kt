@@ -1,7 +1,6 @@
 package com.example.f1livetiming.ui.liveTimingScreen.composables
 
 
-
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -14,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -34,31 +34,38 @@ fun DriverMicroSectors(
     thirdMicroSectors: ImmutableList<Int>
 ) {
 
-    Row(modifier = modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically){
+    Row(modifier = modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
 
         /**  First Sector */
-        Column{
+        Column {
 
-            Row(horizontalArrangement = Arrangement.spacedBy(1.dp)){
+            Row(horizontalArrangement = Arrangement.spacedBy(1.dp)) {
 
                 firstMicroSectors.forEach {
-                    Canvas(modifier = Modifier.size(12.dp)) {
+                    Canvas(
+                        modifier = Modifier
+                            .size(12.dp)
+                            .testTag(stringResource(id = R.string.micro_sector_color_dot_test_tag))
+                    ) {
                         drawCircle(Color.fromMicroSector(it))
                     }
                 }
 
             }
 
-            Text(stringResource(id = R.string.micro_sector_sr, firstMicroSectorTime), fontSize = 18.sp)
+            Text(
+                stringResource(id = R.string.micro_sector_sr, firstMicroSectorTime),
+                fontSize = 18.sp
+            )
 
         }
 
         Spacer(modifier.size(15.dp))
 
         /**  Second Sector */
-        Column{
+        Column {
 
-            Row(horizontalArrangement = Arrangement.spacedBy(1.dp)){
+            Row(horizontalArrangement = Arrangement.spacedBy(1.dp)) {
 
                 secondMicroSectors.forEach {
                     Canvas(modifier = Modifier.size(12.dp)) {
@@ -68,16 +75,19 @@ fun DriverMicroSectors(
 
             }
 
-            Text(stringResource(id = R.string.micro_sector_sr, secondMicroSectorTime), fontSize = 18.sp)
+            Text(
+                stringResource(id = R.string.micro_sector_sr, secondMicroSectorTime),
+                fontSize = 18.sp
+            )
 
         }
 
         Spacer(modifier.size(15.dp))
 
         /**  Third Sector */
-        Column{
+        Column {
 
-            Row(horizontalArrangement = Arrangement.spacedBy(1.dp)){
+            Row(horizontalArrangement = Arrangement.spacedBy(1.dp)) {
 
                 thirdMicroSectors.forEach {
                     Canvas(modifier = Modifier.size(12.dp)) {
@@ -87,7 +97,10 @@ fun DriverMicroSectors(
 
             }
 
-            Text(stringResource(id = R.string.micro_sector_sr, thirdMicroSectorTime),fontSize = 18.sp)
+            Text(
+                stringResource(id = R.string.micro_sector_sr, thirdMicroSectorTime),
+                fontSize = 18.sp
+            )
 
         }
     }
@@ -95,7 +108,7 @@ fun DriverMicroSectors(
 }
 
 fun Color.Companion.fromMicroSector(microSector: Int): Color {
-    return  when(microSector) {
+    return when (microSector) {
         2048 -> Color(0xFFeab308)
         2049 -> Color(0xFF10b780)
         2051 -> Color(0xFF7b39ec)
@@ -107,7 +120,7 @@ fun Color.Companion.fromMicroSector(microSector: Int): Color {
 
 @Preview
 @Composable
-fun PreviewDriverMicroSectors(){
+fun PreviewDriverMicroSectors() {
 
     DriverMicroSectors(
         firstMicroSectorTime = 61.500,
