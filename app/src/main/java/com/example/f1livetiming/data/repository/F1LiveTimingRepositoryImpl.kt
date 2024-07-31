@@ -1,5 +1,6 @@
 package com.example.f1livetiming.data.repository
 
+import android.util.Log
 import com.example.f1livetiming.data.dispatchers.Dispatcher
 import com.example.f1livetiming.data.dispatchers.F1LiveTimingDispatchers
 import com.example.f1livetiming.data.mapper.asUIModel
@@ -89,20 +90,32 @@ class F1LiveTimingRepositoryImpl @Inject constructor(
 
     /** Get the driver list from the API and returns a list of [Driver]
      * If the flow fails because of an IOException(No internet connection when making the request)
-     * the flow will retry with constant backoff of 5s */
+     * the flow will retry with constant backoff of 5s
+     *
+     * Wrap the code inside a while loop in order to retry the API call until the data is successfully
+     * received, there are times that the API won't work and without drivers the UI state can't be
+     * completed */
 
     override fun getDrivers(
         onIdle: () -> Unit,
         onError: (String) -> Unit
     ): Flow<List<Driver>> = flow {
 
-        val driverResponse = f1Client.getDrivers("latest")
+        var driversEmitted = false
 
-        if (driverResponse.isSuccessful) {
-            emit(driverResponse.body()!!.asUIModel())
-            onIdle()
-        } else {
-            onError(driverResponse.errorBody().toString())
+        while(!driversEmitted){
+
+            val driverResponse = f1Client.getDrivers("latest")
+
+            if (driverResponse.isSuccessful) {
+                emit(driverResponse.body()!!.asUIModel())
+                driversEmitted = true
+                onIdle()
+            } else {
+                onError(driverResponse.errorBody().toString())
+            }
+
+            delay(3000)
         }
 
     }.retryWhen { cause: Throwable, _ ->
@@ -226,15 +239,24 @@ class F1LiveTimingRepositoryImpl @Inject constructor(
 
     override fun getSession(onIdle: () -> Unit, onError: (String) -> Unit): Flow<List<Session>> = flow {
 
-            val sessionResponse = f1Client.getSession("latest")
+            var sessionEmitted = false
 
-            if (sessionResponse.isSuccessful) {
+            while(!sessionEmitted){
 
-                emit(sessionResponse.body()!!.asUIModel())
-                onIdle()
+                val sessionResponse = f1Client.getSession("latest")
 
-            } else {
-                onError(sessionResponse.errorBody().toString())
+                if (sessionResponse.isSuccessful) {
+
+                    emit(sessionResponse.body()!!.asUIModel())
+                    sessionEmitted = true
+                    onIdle()
+
+                } else {
+                    onError(sessionResponse.errorBody().toString())
+                }
+
+                delay(3000)
+
             }
 
         }.retryWhen { cause: Throwable, _ ->
