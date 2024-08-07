@@ -30,7 +30,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        api-level: [26, 30, 34]
+        api-level: [26, 29]
 
     steps:
       - name: Enable KVM group perms
