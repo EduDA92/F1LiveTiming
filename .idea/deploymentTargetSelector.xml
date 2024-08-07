@@ -8,9 +8,6 @@
       <SelectionState runConfigName="LiveTimingScreenTest">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="driverData_isCorrectlyDisplayed()">
-        <option name="selectionMode" value="DROPDOWN" />
-      </SelectionState>
       <SelectionState runConfigName="Tests in 'com.example.f1livetiming'">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
