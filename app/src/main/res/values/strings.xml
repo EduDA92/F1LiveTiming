@@ -40,4 +40,6 @@
     <string name="error_test_tag">"error"</string>
     <string name="driver_box_test_tag">driver box test tag</string>
     <string name="micro_sector_color_dot_test_tag">micro sector dot test tag</string>
+    <string name="live_timing_screen_sr">LiveTiming</string>
+    <string name="radios_screen_sr">Radios</string>
 </resources>

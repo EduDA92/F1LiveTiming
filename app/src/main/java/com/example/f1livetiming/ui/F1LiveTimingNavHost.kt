@@ -7,11 +7,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.example.f1livetiming.ui.liveTimingScreen.navigation.liveTimingScreen
 import com.example.f1livetiming.ui.liveTimingScreen.navigation.liveTimingScreenRoute
+import com.example.f1livetiming.ui.radiosScreen.navigation.radiosScreen
 
 @Composable
 fun F1LiveTimingNavHost(
     modifier: Modifier = Modifier,
-    navController: NavHostController = rememberNavController()
+    navController: NavHostController
 ) {
 
     NavHost(
@@ -21,6 +22,7 @@ fun F1LiveTimingNavHost(
     ) {
 
         liveTimingScreen()
+        radiosScreen()
 
     }
 
