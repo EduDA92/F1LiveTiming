@@ -40,6 +40,7 @@ import com.example.f1livetiming.ui.liveTimingScreen.composables.DriverPositionCh
 import com.example.f1livetiming.ui.liveTimingScreen.composables.DriverStint
 import com.example.f1livetiming.ui.liveTimingScreen.composables.DriverTag
 import com.example.f1livetiming.ui.liveTimingScreen.composables.LiveTimingHeader
+import com.example.f1livetiming.ui.liveTimingScreen.navigation.liveTimingScreenRoute
 import kotlinx.collections.immutable.persistentListOf
 
 
@@ -53,7 +54,7 @@ fun LiveTimingRoute(
     val liveTimingData by viewModel.liveTimingData.collectAsStateWithLifecycle()
 
     LiveTimingScreen(
-        modifier = modifier,
+        modifier = modifier.testTag(liveTimingScreenRoute),
         state = state,
         liveTimingData = liveTimingData
     )
