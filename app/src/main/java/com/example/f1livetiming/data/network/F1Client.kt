@@ -30,4 +30,8 @@ class F1Client @Inject constructor(
         sessionKey: String
     ) = f1Service.getIntervals(sessionKey)
 
+    suspend fun getTeamsRadio(
+        sessionKey: String
+    ) = f1Service.getTeamsRadio(sessionKey)
+
 }
