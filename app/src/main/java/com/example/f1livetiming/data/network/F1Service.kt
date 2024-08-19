@@ -6,6 +6,7 @@ import com.example.f1livetiming.data.network.model.IntervalDTO
 import com.example.f1livetiming.data.network.model.LapDTO
 import com.example.f1livetiming.data.network.model.SessionDTO
 import com.example.f1livetiming.data.network.model.StintDTO
+import com.example.f1livetiming.data.network.model.TeamRadioDTO
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -42,5 +43,10 @@ interface F1Service {
     suspend fun getIntervals(
         @Query("session_key") sessionKey: String
     ): Response<List<IntervalDTO>?>
+
+    @GET("team_radio")
+    suspend fun getTeamsRadio(
+        @Query("session_key") sessionKey: String
+    ): Response<List<TeamRadioDTO>>
 
 }
