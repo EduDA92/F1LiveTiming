@@ -6,6 +6,7 @@ import com.example.f1livetiming.ui.model.Interval
 import com.example.f1livetiming.ui.model.Lap
 import com.example.f1livetiming.ui.model.Session
 import com.example.f1livetiming.ui.model.Stint
+import com.example.f1livetiming.ui.model.TeamRadio
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
@@ -24,6 +25,7 @@ class TestF1LiveTimingRepositoryImpl : F1LiveTimingRepository  {
     private var stintList = emptyList<Stint>()
     private var currentSession = emptyList<Session>()
     private var intervalList = emptyList<Interval>()
+    private var radioList = emptyList<TeamRadio>()
     private var responseState = ResponseState.WAITING
 
     override fun getDriversPositions(
@@ -128,6 +130,24 @@ class TestF1LiveTimingRepositoryImpl : F1LiveTimingRepository  {
         }
     }
 
+    override fun getTeamsRadio(
+        onIdle: () -> Unit,
+        onError: (String) -> Unit
+    ): Flow<List<TeamRadio>> = flow {
+        when(responseState){
+            ResponseState.WAITING -> {
+                // no-op
+            }
+            ResponseState.SUCCESS -> {
+                onIdle()
+                emit(radioList)
+            }
+            ResponseState.ERROR -> {
+                onError("Error")
+            }
+        }
+    }
+
     fun changeDriverPositionList(list: List<DriverPosition>){
         driverPositionsList = list
     }
@@ -150,6 +170,10 @@ class TestF1LiveTimingRepositoryImpl : F1LiveTimingRepository  {
 
     fun changeIntervals(intervals: List<Interval>){
         intervalList = intervals
+    }
+
+    fun changeRadioList(radios: List<TeamRadio>){
+        radioList = radios
     }
 
     fun changeResponseState(state: ResponseState){

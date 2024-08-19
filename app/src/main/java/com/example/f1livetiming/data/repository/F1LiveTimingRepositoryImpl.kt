@@ -11,6 +11,7 @@ import com.example.f1livetiming.ui.model.Interval
 import com.example.f1livetiming.ui.model.Lap
 import com.example.f1livetiming.ui.model.Session
 import com.example.f1livetiming.ui.model.Stint
+import com.example.f1livetiming.ui.model.TeamRadio
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -318,6 +319,41 @@ class F1LiveTimingRepositoryImpl @Inject constructor(
             }
 
             delay(4000)
+
+        }
+
+    }.flowOn(ioDispatcher)
+
+    override fun getTeamsRadio(
+        onIdle: () -> Unit,
+        onError: (String) -> Unit
+    ): Flow<List<TeamRadio>> = flow<List<TeamRadio>> {
+
+        while (true){
+
+            try{
+
+                val teamsRadioResponse = f1Client.getTeamsRadio("latest")
+
+                if(teamsRadioResponse.isSuccessful){
+
+                    emit(teamsRadioResponse.body()!!.asUIModel())
+                    onIdle()
+
+                } else {
+
+                    onError(teamsRadioResponse.errorBody().toString())
+
+                }
+
+            } catch (e: Exception){
+
+                onError(e.message.toString())
+
+            }
+
+
+            delay(60000)
 
         }
 
