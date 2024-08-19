@@ -337,8 +337,17 @@ class F1LiveTimingRepositoryImpl @Inject constructor(
 
                 if(teamsRadioResponse.isSuccessful){
 
-                    emit(teamsRadioResponse.body()!!.asUIModel())
-                    onIdle()
+                    if(teamsRadioResponse.body() == null){
+
+                        emit(emptyList())
+                        onIdle()
+
+                    } else {
+                        emit(teamsRadioResponse.body()!!.asUIModel())
+                        onIdle()
+
+                    }
+
 
                 } else {
 
