@@ -8,6 +8,7 @@ import com.example.f1livetiming.ui.model.DriverPosition
 import com.example.f1livetiming.ui.model.Interval
 import com.example.f1livetiming.ui.model.Lap
 import com.example.f1livetiming.ui.model.Stint
+import com.example.f1livetiming.ui.model.TeamRadio
 import com.example.f1livetiming.utils.MainDispatcherRule
 import com.example.f1livetiming.utils.enqueueResponse
 import com.example.f1livetiming.utils.expectedDriverResponse
@@ -16,6 +17,7 @@ import com.example.f1livetiming.utils.expectedLapsResponse
 import com.example.f1livetiming.utils.expectedNullLapDurationResponse
 import com.example.f1livetiming.utils.expectedStintsResponse
 import com.example.f1livetiming.utils.intervalsExpectedResponse
+import com.example.f1livetiming.utils.radiosExpectedResponse
 import com.example.f1livetiming.utils.sessionsExpectedResponse
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
@@ -222,6 +224,37 @@ class F1LiveTimingRepositoryImplTest {
         ).first()
 
         assertEquals(emptyList<Interval>(), result)
+
+    }
+
+    @Test
+    fun f1LiveTimingRepositoryImpl_radiosResponse_returnsExpectedResponse() = runTest {
+
+        mockWebServer.enqueueResponse("TeamsRadio.json")
+
+        val result = repository.getTeamsRadio(
+            onIdle = {},
+            onError = {}
+        ).first()
+
+        assertEquals(
+            radiosExpectedResponse,
+            result
+        )
+
+    }
+
+    @Test
+    fun f1LiveTimingRepositoryImpl_radiosEmptyResponse_returnsEmptyList() = runTest {
+
+        mockWebServer.enqueueResponse("nullResponse.json")
+
+        val result = repository.getTeamsRadio(
+            onIdle = {},
+            onError = {}
+        ).first()
+
+        assertEquals(emptyList<TeamRadio>(), result)
 
     }
 

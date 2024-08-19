@@ -8,6 +8,7 @@ import com.example.f1livetiming.ui.model.Interval
 import com.example.f1livetiming.ui.model.Lap
 import com.example.f1livetiming.ui.model.Session
 import com.example.f1livetiming.ui.model.Stint
+import com.example.f1livetiming.ui.model.TeamRadio
 import kotlinx.collections.immutable.persistentListOf
 
 val expectedFullDriverPositionResponse = listOf(
@@ -717,4 +718,15 @@ val intervalsExpectedResponse = listOf(
         interval = "0"
     ),
 
+)
+
+val radiosExpectedResponse = listOf(
+    TeamRadio(
+        driverNumber = 55,
+        recordingUrl = "https://livetiming.formula1.com/static/2024/2024-07-28_Belgian_Grand_Prix/2024-07-28_Race/TeamRadio/CARSAI01_55_20240728_140908.mp3"
+    ),
+    TeamRadio(
+        driverNumber = 4,
+        recordingUrl = "https://livetiming.formula1.com/static/2024/2024-07-28_Belgian_Grand_Prix/2024-07-28_Race/TeamRadio/LANNOR01_4_20240728_140933.mp3"
+    )
 )

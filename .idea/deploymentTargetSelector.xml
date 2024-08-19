@@ -8,13 +8,7 @@
       <SelectionState runConfigName="Tests in 'com.example.f1livetiming'">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="firstScreen_isLiveTimingScreen()">
-        <option name="selectionMode" value="DROPDOWN" />
-      </SelectionState>
       <SelectionState runConfigName="LiveTimingNavigationTest">
-        <option name="selectionMode" value="DROPDOWN" />
-      </SelectionState>
-      <SelectionState runConfigName="navigationBar_BackFromMainScreen_ExitsApp()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>
