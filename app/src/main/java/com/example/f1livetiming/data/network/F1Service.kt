@@ -47,6 +47,6 @@ interface F1Service {
     @GET("team_radio")
     suspend fun getTeamsRadio(
         @Query("session_key") sessionKey: String
-    ): Response<List<TeamRadioDTO>>
+    ): Response<List<TeamRadioDTO>?>
 
 }
