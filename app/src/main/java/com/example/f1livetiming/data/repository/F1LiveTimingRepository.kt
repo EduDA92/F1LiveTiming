@@ -6,6 +6,7 @@ import com.example.f1livetiming.ui.model.Interval
 import com.example.f1livetiming.ui.model.Lap
 import com.example.f1livetiming.ui.model.Session
 import com.example.f1livetiming.ui.model.Stint
+import com.example.f1livetiming.ui.model.TeamRadio
 import kotlinx.coroutines.flow.Flow
 
 interface F1LiveTimingRepository {
@@ -39,5 +40,10 @@ interface F1LiveTimingRepository {
         onIdle: () -> Unit,
         onError: (String) -> Unit
     ): Flow<List<Interval>>
+
+    fun getTeamsRadio(
+        onIdle: () -> Unit,
+        onError: (String) -> Unit
+    ): Flow<List<TeamRadio>>
 
 }
