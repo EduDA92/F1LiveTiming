@@ -6,7 +6,8 @@ import com.example.f1livetiming.ui.model.TeamRadio
 fun TeamRadioDTO.asUIModel(): TeamRadio {
     return TeamRadio(
         driverNumber = driverNumber,
-        recordingUrl = recordingUrl
+        recordingUrl = recordingUrl,
+        date = date
     )
 }
 

@@ -6,5 +6,6 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class TeamRadioDTO(
     @SerialName("driver_number") val driverNumber: Int,
-    @SerialName("recording_url") val recordingUrl: String
+    @SerialName("recording_url") val recordingUrl: String,
+    @SerialName("date") val date: String
 )

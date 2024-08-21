@@ -723,10 +723,12 @@ val intervalsExpectedResponse = listOf(
 val radiosExpectedResponse = listOf(
     TeamRadio(
         driverNumber = 55,
-        recordingUrl = "https://livetiming.formula1.com/static/2024/2024-07-28_Belgian_Grand_Prix/2024-07-28_Race/TeamRadio/CARSAI01_55_20240728_140908.mp3"
+        recordingUrl = "https://livetiming.formula1.com/static/2024/2024-07-28_Belgian_Grand_Prix/2024-07-28_Race/TeamRadio/CARSAI01_55_20240728_140908.mp3",
+        date = "2024-07-28T12:09:11.200000+00:00"
     ),
     TeamRadio(
         driverNumber = 4,
-        recordingUrl = "https://livetiming.formula1.com/static/2024/2024-07-28_Belgian_Grand_Prix/2024-07-28_Race/TeamRadio/LANNOR01_4_20240728_140933.mp3"
+        recordingUrl = "https://livetiming.formula1.com/static/2024/2024-07-28_Belgian_Grand_Prix/2024-07-28_Race/TeamRadio/LANNOR01_4_20240728_140933.mp3",
+        date = "2024-07-28T12:09:44.849000+00:00"
     )
 )
