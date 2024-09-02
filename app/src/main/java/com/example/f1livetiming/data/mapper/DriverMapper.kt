@@ -12,7 +12,7 @@ fun DriverDTO.asUIModel(): Driver {
     return Driver(
         driverAcronym = nameAcronym,
         driverNumber = driverNumber,
-        teamColor = stringBuilder.append(argbStartString).append(teamColor).toString()
+        teamColor = stringBuilder.append(argbStartString).append(teamColor ?: "000000").toString()
 
     )
 
