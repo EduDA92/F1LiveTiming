@@ -39,19 +39,16 @@ class RadiosViewModelTest {
     @Test
     fun radiosViewModel_initialState_loadingState() = runTest {
 
-        val collectJob = launch(UnconfinedTestDispatcher(testScheduler)){
+       backgroundScope.launch(UnconfinedTestDispatcher()){
             viewModel.radiosUIState.collect()
         }
 
-        val collectJob2 = launch(UnconfinedTestDispatcher(testScheduler)){
+        backgroundScope.launch(UnconfinedTestDispatcher()){
             viewModel.radiosData.collect()
         }
 
         assertEquals(RadiosUIState.Loading, viewModel.radiosUIState.value)
         assertEquals(RadiosData(emptyMap()), viewModel.radiosData.value)
-
-        collectJob.cancel()
-        collectJob2.cancel()
 
     }
 
@@ -61,19 +58,16 @@ class RadiosViewModelTest {
 
         repository.changeResponseState(ResponseState.ERROR)
 
-        val collectJob = launch(UnconfinedTestDispatcher(testScheduler)){
+        backgroundScope.launch(UnconfinedTestDispatcher()){
             viewModel.radiosUIState.collect()
         }
 
-        val collectJob2 = launch(UnconfinedTestDispatcher(testScheduler)){
+        backgroundScope.launch(UnconfinedTestDispatcher()){
             viewModel.radiosData.collect()
         }
 
         assertEquals(RadiosUIState.Error("Error"), viewModel.radiosUIState.value)
         assertEquals(RadiosData(emptyMap()), viewModel.radiosData.value)
-
-        collectJob.cancel()
-        collectJob2.cancel()
 
     }
 
@@ -100,11 +94,11 @@ class RadiosViewModelTest {
         repository.changeDriverList(listOf(Driver("VER", 1, "#FF3671C6")))
         repository.changeRadioList(listOf(TeamRadio(driverNumber = 1, recordingUrl = "URL", date = "2024-07-28T14:25:45.693000+00:00")))
 
-        val collectJob = launch(UnconfinedTestDispatcher(testScheduler)){
+        backgroundScope.launch(UnconfinedTestDispatcher()){
             viewModel.radiosUIState.collect()
         }
 
-        val collectJob2 = launch(UnconfinedTestDispatcher(testScheduler)){
+        backgroundScope.launch(UnconfinedTestDispatcher()){
             viewModel.radiosData.collect()
         }
 
@@ -115,10 +109,6 @@ class RadiosViewModelTest {
                     listOf(TeamRadio(driverNumber = 1, recordingUrl = "URL", date = formattedDate))
 
             )), viewModel.radiosData.value)
-
-        collectJob.cancel()
-        collectJob2.cancel()
-
 
     }
 

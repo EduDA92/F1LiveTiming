@@ -53,11 +53,11 @@ class F1LiveTimingViewModelTest {
     @Test
     fun f1LiveTimingViewModel_initialState_loadingState() = runTest {
 
-        val collectJob = launch(UnconfinedTestDispatcher(testScheduler)) {
+        backgroundScope.launch(UnconfinedTestDispatcher()) {
             viewModel.liveTimingUIState.collect()
         }
 
-        val collectJob2 = launch(UnconfinedTestDispatcher(testScheduler)) {
+        backgroundScope.launch(UnconfinedTestDispatcher()) {
             viewModel.liveTimingData.collect()
         }
 
@@ -71,9 +71,6 @@ class F1LiveTimingViewModelTest {
             ),
             viewModel.liveTimingData.value
         )
-
-        collectJob.cancel()
-        collectJob2.cancel()
     }
 
     /** When [ResponseState] is Error [LiveTimingUIState] should be Error
@@ -85,11 +82,11 @@ class F1LiveTimingViewModelTest {
         /** Setup the state of the repo */
         repository.changeResponseState(state = ResponseState.ERROR)
 
-        val collectJob = launch(UnconfinedTestDispatcher(testScheduler)) {
+        backgroundScope.launch(UnconfinedTestDispatcher()) {
             viewModel.liveTimingUIState.collect()
         }
 
-        val collectJob2 = launch(UnconfinedTestDispatcher(testScheduler)) {
+        backgroundScope.launch(UnconfinedTestDispatcher()) {
             viewModel.liveTimingData.collect()
         }
 
@@ -104,8 +101,6 @@ class F1LiveTimingViewModelTest {
             viewModel.liveTimingData.value
         )
 
-        collectJob.cancel()
-        collectJob2.cancel()
     }
 
     /** When [ResponseState] is SUCCESS [LiveTimingUIState] should be Iddle
@@ -152,11 +147,11 @@ class F1LiveTimingViewModelTest {
                 )
             )
 
-            val collectJob = launch(UnconfinedTestDispatcher(testScheduler)) {
+            backgroundScope.launch(UnconfinedTestDispatcher()) {
                 viewModel.liveTimingUIState.collect()
             }
 
-            val collectJob2 = launch(UnconfinedTestDispatcher(testScheduler)) {
+            backgroundScope.launch(UnconfinedTestDispatcher()) {
                 viewModel.liveTimingData.collect()
             }
 
@@ -168,8 +163,6 @@ class F1LiveTimingViewModelTest {
                 viewModel.liveTimingData.value
             )
 
-            collectJob.cancel()
-            collectJob2.cancel()
         }
 
     /** When there is no lap/Stint data associated to a driver the default lap data sent to the UI
@@ -187,11 +180,11 @@ class F1LiveTimingViewModelTest {
         repository.changeSession(emptyList())
         repository.changeIntervals(emptyList())
 
-        val collectJob = launch(UnconfinedTestDispatcher(testScheduler)) {
+        backgroundScope.launch(UnconfinedTestDispatcher()) {
             viewModel.liveTimingUIState.collect()
         }
 
-        val collectJob2 = launch(UnconfinedTestDispatcher(testScheduler)) {
+        backgroundScope.launch(UnconfinedTestDispatcher()) {
             viewModel.liveTimingData.collect()
         }
 
@@ -202,8 +195,6 @@ class F1LiveTimingViewModelTest {
             viewModel.liveTimingData.value
         )
 
-        collectJob.cancel()
-        collectJob2.cancel()
     }
 
 
@@ -235,11 +226,11 @@ class F1LiveTimingViewModelTest {
             )
         )
 
-        val collectJob = launch(UnconfinedTestDispatcher(testScheduler)) {
+        backgroundScope.launch(UnconfinedTestDispatcher()) {
             viewModel.liveTimingUIState.collect()
         }
 
-        val collectJob2 = launch(UnconfinedTestDispatcher(testScheduler)) {
+        backgroundScope.launch(UnconfinedTestDispatcher()) {
             viewModel.liveTimingData.collect()
         }
 
@@ -250,8 +241,6 @@ class F1LiveTimingViewModelTest {
             viewModel.liveTimingData.value
         )
 
-        collectJob.cancel()
-        collectJob2.cancel()
     }
 
     /** When the current session its not a Race the positionChange remains at 0
@@ -322,11 +311,11 @@ class F1LiveTimingViewModelTest {
                 )
             )
 
-            val collectJob = launch(UnconfinedTestDispatcher(testScheduler)) {
+            backgroundScope.launch(UnconfinedTestDispatcher()) {
                 viewModel.liveTimingUIState.collect()
             }
 
-            val collectJob2 = launch(UnconfinedTestDispatcher(testScheduler)) {
+            backgroundScope.launch(UnconfinedTestDispatcher()) {
                 viewModel.liveTimingData.collect()
             }
 
@@ -337,10 +326,6 @@ class F1LiveTimingViewModelTest {
                 noRaceExpectedResponse,
                 viewModel.liveTimingData.value
             )
-
-            collectJob.cancel()
-            collectJob2.cancel()
-
         }
 
     private val fullLapListData = listOf(
